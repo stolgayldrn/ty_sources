@@ -1,5 +1,4 @@
 #include "TVoctreeVLFeat.h"
-#include "TFeatureExtractor.h"
 
 #include <iostream>
 #include <string>
