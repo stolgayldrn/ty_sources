@@ -1141,10 +1141,10 @@ int extract_descriptor_with_gradient(
 
 		// Boundary of sample region.
 		int r, c;
-		int left = (std::fmax(-win_size, 1 - kptc_i));
-		int right = (std::fmin(win_size, w - 2 - kptc_i));
-		int top = (std::fmax(-win_size, 1 - kptr_i));
-		int bottom = (std::fmin(win_size, h - 2 - kptr_i));
+		int left = (max(-win_size, 1 - kptc_i));
+		int right = (min(win_size, w - 2 - kptc_i));
+		int top = (std::max(-win_size, 1 - kptr_i));
+		int bottom = (std::min(win_size, h - 2 - kptr_i));
 
 		for (int i = top; i <= bottom; i ++) // rows
 		{
@@ -1227,7 +1227,7 @@ int extract_descriptor_with_gradient(
 		// Cut off the numbers bigger than 0.2 after normalized.
 		for (int i = 0; i < nBins; i ++)
 		{
-			tmp = fmin(thr, histBin[i]);
+			tmp = min(thr, histBin[i]);
 			histBin[i] = tmp;
 			sum_square += tmp * tmp;
 		}
@@ -1337,10 +1337,10 @@ int extract_descriptor_with_gradient_circular_buf(
 
 		// Boundary of sample region.
 		int r, c;
-		int left = (std::fmax(-win_size, 1 - kptc_i));
-		int right = (std::fmin(win_size, w - 2 - kptc_i));
-		int top = (std::fmax(-win_size, 1 - kptr_i));
-		int bottom = (std::fmin(win_size, h - 2 - kptr_i));
+		int left = (std::max(-win_size, 1 - kptc_i));
+		int right = (std::min(win_size, w - 2 - kptc_i));
+		int top = (std::max(-win_size, 1 - kptr_i));
+		int bottom = (std::min(win_size, h - 2 - kptr_i));
 
 		for (int i = top; i <= bottom; i ++) // rows
 		{
@@ -1485,7 +1485,7 @@ int extract_descriptor_with_gradient_circular_buf(
 		// Cut off the numbers bigger than 0.2 after normalized.
 		for (int i = 0; i < nBins; i ++)
 		{
-			tmp = fmin(thr, dstBins[i]);
+			tmp = min(thr, dstBins[i]);
 			dstBins[i] = tmp;
 			sum_square += tmp * tmp;
 		}
@@ -1626,7 +1626,7 @@ int sift_cpu(
 	// Number of DoG images in one octave.
 	int nDogLayers = nLayers + 2;
 	// Number of octaves according to the size of image. 
-	int nOctaves = (int) my_log2((float)fmin(image.w, image.h)) - 3 - firstOctave; // 2 or 3, need further research
+	int nOctaves = (int) my_log2((float)min(image.w, image.h)) - 3 - firstOctave; // 2 or 3, need further research
 
 	// Build image octaves
 	vector< ImageObj<uchar> > octaves(nOctaves);
@@ -1711,7 +1711,7 @@ int combine_image(
 	int w2 = image2.w;
 	int h2 = image2.h;
 	int dstW = w1 + w2;
-	int dstH = (std::fmax(h1, h2));
+	int dstH = (std::max(h1, h2));
 
 	out_image.init(dstW, dstH);
 

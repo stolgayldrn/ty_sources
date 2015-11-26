@@ -1,17 +1,18 @@
 ﻿#ifndef VLFEAT_VOCTREE
 #define VLFEAT_VOCTREE
 
-
-
-#include <stdio.h>
-#include <vl/generic.h>
-#include <vl/hikmeans.h>
-#include <vl/kmeans.h>
-#include <vl/random.h>
-#include "math.h"
 #include "helpers2.h"
+#include "descriptors.h"
+#include <stdio.h>
+#include "vl/generic.h"
+#include "vl/hikmeans.h"
+#include "vl/kmeans.h"
+#include "vl/random.h"
+#include "math.h"
 #include "TVoctree.h"
 #include <omp.h>
+#include <ctime>
+
 
 #ifndef __IPL_H__
    typedef unsigned char uchar;
@@ -22,6 +23,10 @@
 enum VLFeat_Init_Mode { Small_Tree=1, Middle_Tree, Large_Tree, TEST_Tree};
 //const char * VL_FeatTree_Names [] = {"Small_Tree", "Middle_Tree", "Large_Tree", "TEST_Tree"};
 
+int read_SIG_V2s_From_OneFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc, vl_size maxTotalDesc, bool RootSIFT = false);
+int read_SIGs_From_OneFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc, vl_size maxTotalDesc, bool RootSIFT = false);
+int read_SIGs_From_YearFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc, vl_size maxTotalDesc, bool RootSIFT);
+int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc);
 // sen o inheritance'larla ugrasma. cok fazla sey var. ben yapiyorum.
 // o zman bunu eski haliyle çalıştırıp hataya bakalım
 // aynen
@@ -34,7 +39,7 @@ public:
 	// Param: fname ... (IN) path to voctree
 	int init_read(const char *fname, int truncate = 0);
 	
-	int init(const uchar *data , int DataSize, int TreeMode);
+	int init(const uchar *data , int DataSize, int TreeMode, int numOfDimension);
 	// Memory deallocation
 	void clean(void);
 
@@ -53,7 +58,7 @@ public:
 	//        sift... (IN) input SIFT vector 128 chars normalized to 0..255
 	void quantize(unsigned int *vwi, unsigned char *sift);
 
-	void quantize_multi(unsigned int *vwM, unsigned char *sift, int numDesc, int featSize); 
+	void quantize_multi(unsigned int *vwM, unsigned char *sift, int numDesc); 
 
 
 	// Computes the number of treenodes (clustercenters) for given split and level
