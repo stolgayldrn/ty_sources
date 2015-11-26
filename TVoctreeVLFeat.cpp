@@ -7,269 +7,15 @@ using namespace std;
 
 #define VL_FEAT_HIKM_TREE_MAGIC 2494285466
 
-int read_SIG_V2s_From_OneFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc, vl_size maxTotalDesc, bool RootSIFT )
-{
-	//omp_set_num_threads(omp_get_num_procs());	
-		int  maxNumImages = 0, offset = 0; 
-		numTotalDesc=0;
-		
-		//Folder address standardization
-		if(ReadFolderAddr.at( ReadFolderAddr.length() - 1 ) != '/')
-			ReadFolderAddr = ReadFolderAddr + '/';
-		vector<string> TrainFiles;
-		get_directory_signatures(ReadFolderAddr.c_str(), TrainFiles);	
-				
-		//printf("Starting... %d ... ", TrainFiles.size());
-		//for (int fi=0; fi<TrainFiles.size(); fi++)
-		for (int fi=0; fi<1000; fi++)
-		{
-			string ReadSigAddr = ReadFolderAddr + TrainFiles[fi]; 
-			const char* sigFile = ReadSigAddr.c_str();
-			unsigned char * RootSIFTptr;
-			if(is_sig_file(sigFile))
-			{
-				
-				TSignature mySig = t_feat_read_sig_v2(sigFile);
-				
-				unsigned int numdesc = mySig.numKeypts;
-					//fread(&numdesc, sizeof(unsigned int), 1, f);
-				if((numTotalDesc+numdesc) <= maxTotalDesc)
-						if(!RootSIFT)
-						{
-						//fread(MySiftu+(numTotalDesc*128), sizeof(unsigned char), (numdesc)*128, f);
-							memcpy(MySiftu+(numTotalDesc*128), mySig.keyPoints,(numdesc)*128*sizeof(unsigned char));
-							
-						}
-						else
-						{
-							RootSIFTptr = new unsigned char[numdesc*128];
-							memcpy(RootSIFTptr, mySig.keyPoints,(numdesc)*128*sizeof(unsigned char));
-#pragma omp parallel for
-							for( int ri = 0;  ri<numdesc*128; ri++)
-							{
-								RootSIFTptr[ri] = sqrt(RootSIFTptr[ri]);
-							}
-							memcpy(MySiftu+(numTotalDesc*128), RootSIFTptr, (numdesc)*128);
 
-							
-						}
-					else
-					{
-						printf("Total Descriptors Size reached maxTotalDesc limit\n");
-						printf("Num of Total Desc:%d\n", numTotalDesc);
-						maxNumImages = fi;
-						TrainFiles.clear(); // bunu demeye dahi gerek olmamali normalde.
-						printf("Read:%d\n", maxNumImages);
-						return 1;
-					}
-					
-					numTotalDesc+= numdesc; 
-					if (fi % 1000 == 0)
-						printf("Image number: %d \n",fi);
-					
-			}
-		//printf("si %d, sii %d fi %d\n", si, sii,fi);
-		}
-				
-		printf("Num of Total Desc:%d\n", numTotalDesc);
-		maxNumImages += TrainFiles.size();
-		TrainFiles.clear(); // bunu demeye dahi gerek olmamali normalde.
-		printf("Read:%d\n", maxNumImages);
-		return 1;
-
-}
-
-int read_SIGs_From_OneFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc, vl_size maxTotalDesc, bool RootSIFT)
-{
-	omp_set_num_threads(omp_get_num_procs());	
-		int  maxNumImages = 0, offset = 0; 
-		numTotalDesc=0;
-		
-		//Folder address standardization
-		if(ReadFolderAddr.at( ReadFolderAddr.length() - 1 ) != '/')
-			ReadFolderAddr = ReadFolderAddr + '/';
-		vector<string> TrainFiles;
-		get_directory_signatures(ReadFolderAddr.c_str(), TrainFiles);	
-				
-		//printf("Starting... %d ... ", TrainFiles.size());
-		for (int fi=0; fi<TrainFiles.size(); fi++)
-		{
-			string ReadSigAddr = ReadFolderAddr + TrainFiles[fi]; 
-			const char* sigFile = ReadSigAddr.c_str();
-			unsigned char * RootSIFTptr;
-			if(is_sig_file(sigFile))
-			{
-				//if(file_exist(sigFile))
-				FILE* f = fopen(sigFile, "rb");
-				if(f) 
-				{
-					unsigned int numdesc = 0;
-					fread(&numdesc, sizeof(unsigned int), 1, f);
-					if((numTotalDesc+numdesc) <= maxTotalDesc)
-						if(!RootSIFT)
-						fread(MySiftu+(numTotalDesc*128), sizeof(unsigned char), (numdesc)*128, f);
-						else
-						{
-							RootSIFTptr = new unsigned char[numdesc*128];
-							fread(RootSIFTptr, sizeof(unsigned char), (numdesc)*128, f);
-#pragma omp parallel for
-							for( int ri = 0;  ri<numdesc*128; ri++)
-							{
-								RootSIFTptr[ri] = sqrt(RootSIFTptr[ri]);
-							}
-							memcpy(MySiftu+(numTotalDesc*128), RootSIFTptr, (numdesc)*128);
-							
-						}
-					else
-					{
-						printf("Total Descriptors Size reached maxTotalDesc limit\n");
-						printf("Num of Total Desc:%d\n", numTotalDesc);
-						maxNumImages = fi;
-						TrainFiles.clear(); // bunu demeye dahi gerek olmamali normalde.
-						printf("Read:%d\n", maxNumImages);
-						return 1;
-					}
-					fclose(f);
-					numTotalDesc+= numdesc; 
-					printf("Image number: %d \n",fi);
-					
-				}
-			}
-		//printf("si %d, sii %d fi %d\n", si, sii,fi);
-		}
-				
-		printf("Num of Total Desc:%d\n", numTotalDesc);
-		maxNumImages += TrainFiles.size();
-		TrainFiles.clear(); // bunu demeye dahi gerek olmamali normalde.
-		printf("Read:%d\n", maxNumImages);
-		return 1;
-
-}
-
-int read_SIGs_From_YearFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc,vl_size maxTotalDesc, bool RootSIFT)
-{			
-	    	
-		vector<string> subFolders;
-		//vector<string> sigFileNames;
-		int  maxNumImages = 0, offset = 0; 
-		numTotalDesc=0;
-		/*vector<int>   numDescsCum;	
-		numDescsCum.clear(); 
-		numDescsCum.push_back(0);*/
-		
-		//Folder address standardization
-		if(ReadFolderAddr.at( ReadFolderAddr.length() - 1 ) != '/')
-			ReadFolderAddr = ReadFolderAddr + '/';
-		get_folder_list(ReadFolderAddr.c_str(), subFolders);
-
-		
-		//sigFileNames.reserve(7000);
-		//numDescsCum.reserve(7000);
-		// traverse and get max number of images
-		for (int si=0; si < subFolders.size(); si++)
-		{
-			string subFolderAddr = ReadFolderAddr + subFolders[si].c_str() + "/";
-			vector<string> subsubFolders;
-			get_folder_list(subFolderAddr.c_str(), subsubFolders);
-
-			for(int sii=0; sii<subsubFolders.size(); sii++)
-			{
-				vector<string> TrainFiles; 
-				/*
-				The rule is that when you clear a vector of objects, the destructor of each element will be called.
-				On the other hand, if you have a vector of pointers, vector::clear() will not call delete on them, 
-				and you have to delete them yourself.
-				So if all you have is a vector of strings, and not pointers to strings,
-				then your memory leaks must be caused by something else.
-				*/
-				string subsubFolderAddr =subFolderAddr + subsubFolders[sii].c_str() + "/";
-				get_directory_signatures(subsubFolderAddr.c_str(), TrainFiles);	
-				
-				//printf("Starting... %d ... ", TrainFiles.size());
-				for (int fi=0; fi<TrainFiles.size(); fi++)
-				{
-					string ReadSigAddr = subsubFolderAddr + TrainFiles[fi]; 
-					const char* sigFile = ReadSigAddr.c_str();
-					unsigned char * RootSIFTptr;
-
-					if(is_sig_file(sigFile))
-					{
-						TSignature mySig = t_feat_read_sig_v2(sigFile);
-
-						unsigned int numdesc = mySig.numKeypts;
-						//fread(&numdesc, sizeof(unsigned int), 1, f);
-						if((numTotalDesc+numdesc) <= maxTotalDesc)
-						{
-							if(!RootSIFT)
-							{
-								//fread(MySiftu+(numTotalDesc*128), sizeof(unsigned char), (numdesc)*128, f);
-								memcpy(MySiftu+(numTotalDesc*128), mySig.keyPoints,(numdesc)*128*sizeof(unsigned char));
-
-							}
-							else
-							{
-								RootSIFTptr = new unsigned char[numdesc*128];
-								memcpy(RootSIFTptr, mySig.keyPoints,(numdesc)*128*sizeof(unsigned char));
-#pragma omp parallel for
-								for( int ri = 0;  ri<numdesc*128; ri++)
-								{
-									RootSIFTptr[ri] = sqrt(RootSIFTptr[ri]);
-								}
-								memcpy(MySiftu+(numTotalDesc*128), RootSIFTptr, (numdesc)*128);
-
-
-							}
-						}
-						else
-						{
-							printf("Total Descriptors Size reached maxTotalDesc limit\n");
-							printf("Num of Total Desc:%d\n", numTotalDesc);
-							maxNumImages = fi;
-							TrainFiles.clear(); // bunu demeye dahi gerek olmamali normalde.
-							printf("Read:%d\n", maxNumImages);
-							return 1;
-						}
-
-						numTotalDesc+= numdesc; 
-						printf("Image number: %d \n",fi);
-
-
-/////////////////////////////for sig_V1
-						//if(file_exist(sigFile))
-						//FILE* f = fopen(sigFile, "rb");
-						//if(f) 
-						//{
-						//	unsigned int numdesc = 0;
-						//	fread(&numdesc, sizeof(unsigned int), 1, f);
-						//	fread(MySiftu+(numTotalDesc*128), sizeof(unsigned char), (numdesc)*128, f);
-						//	fclose(f);
-						//	numTotalDesc+= numdesc; 
-						//	//printf("Num of Total Desc:%d\n", numTotalDesc);
-						//	//sigFileNames.push_back(ReadSigAddr);
-						//	//numDescsCum.push_back(numDescsCum[numDescsCum.size()-1] + numdesc);
-						//}
-					}
-				//printf("si %d, sii %d fi %d\n", si, sii,fi);
-				}
-				printf("Indexed folder: si %d, sii %d\n", si, sii);
-				printf("Num of Total Desc:%d\n", numTotalDesc);
-				maxNumImages += TrainFiles.size();
-				TrainFiles.clear(); // bunu demeye dahi gerek olmamali normalde.
-			}
-			subsubFolders.clear(); // bunu demeye dahi gerek olmamali normalde.
-		}
-
-		//maxNumImages = sigFileNames.size();
-		printf("Read:%d\n", maxNumImages);
-		return 1;
-
-}
 
 int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc)
 {
 	vector<string> folderList;
 	get_folder_list(readFolderPath.c_str(),folderList);
-omp_set_num_threads(omp_get_max_threads());		
+	int numOfParallel = 32;
+	omp_set_dynamic(0);     // Explicitly disable dynamic teams
+	omp_set_num_threads(32); // Use 4 threads for all consecutive parallel regions		
 	for (int k = 0; k < folderList.size(); k++)
 	{
 		string subFolderPath = readFolderPath + "/" + folderList[k] + "/" + dsc_type;
@@ -460,7 +206,8 @@ int TVoctreeVLFeat::write_hikm(const char* FileName)
 {
 	VlHIKMNode* root = this->vocabTree.root;
 
-	FILE* f = fopen(FileName, "wb");
+	FILE* f = new FILE;
+	fopen_s(&f,FileName, "wb");
 
 	if (!f)
 	{
@@ -526,7 +273,8 @@ VlHIKMNode *TVoctreeVLFeat::create_tree_node(FILE* f)
 
 int TVoctreeVLFeat::read_hikm(const char* FileName)
 {
-	FILE* f = fopen(FileName, "rb");
+	FILE* f = new FILE;
+	fopen_s(&f, FileName, "rb");
 
 	if (!f)
 	{

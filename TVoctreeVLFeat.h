@@ -23,9 +23,6 @@
 enum VLFeat_Init_Mode { Small_Tree=1, Middle_Tree, Large_Tree, TEST_Tree};
 //const char * VL_FeatTree_Names [] = {"Small_Tree", "Middle_Tree", "Large_Tree", "TEST_Tree"};
 
-int read_SIG_V2s_From_OneFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc, vl_size maxTotalDesc, bool RootSIFT = false);
-int read_SIGs_From_OneFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc, vl_size maxTotalDesc, bool RootSIFT = false);
-int read_SIGs_From_YearFolder(string ReadFolderAddr, unsigned char* MySiftu, vl_size &numTotalDesc, vl_size maxTotalDesc, bool RootSIFT);
 int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc);
 // sen o inheritance'larla ugrasma. cok fazla sey var. ben yapiyorum.
 // o zman bunu eski haliyle çalıştırıp hataya bakalım
