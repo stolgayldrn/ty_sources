@@ -339,13 +339,13 @@ void TVoctreeVLFeat::quantize(unsigned int *vwi, unsigned char *sift){
 	//printf("\n");
 }
 
-void TVoctreeVLFeat::quantize_multi(unsigned int *vwM, unsigned char *sift, int numDesc) 
+void TVoctreeVLFeat::quantize_multi(unsigned int *vwM, unsigned char *sift, int numDesc, int dimOfDesc) 
 {
 #if defined _OPENMP
 #pragma omp parallel for
 #endif
 	for (int k = 0; k < numDesc; k++) {
-		this->quantize(&vwM[k], &sift[k*128]);
+		this->quantize(&vwM[k], &sift[k*dimOfDesc]);
 	}
 }
 

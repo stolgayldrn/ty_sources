@@ -55,7 +55,7 @@ public:
 	//        sift... (IN) input SIFT vector 128 chars normalized to 0..255
 	void quantize(unsigned int *vwi, unsigned char *sift);
 
-	void quantize_multi(unsigned int *vwM, unsigned char *sift, int numDesc); 
+	void quantize_multi(unsigned int *vwM, unsigned char *sift, int numDesc, int dimOfDesc); 
 
 
 	// Computes the number of treenodes (clustercenters) for given split and level
