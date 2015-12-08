@@ -68,8 +68,8 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 			}
 			
 		}
-		printf("\nTotal num of Descriptors: %d .", numTotalDesc);	
-		duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+		printf("\nTotal num of Descriptors: %d .", static_cast<int>(numTotalDesc));	
+		duration = ( std::clock() - start ) / double(CLOCKS_PER_SEC);
 		printf("\nDuration: %f\n\n", duration);
 	}
 
@@ -132,10 +132,10 @@ int TVoctreeVLFeat::init(const uchar *data , int DataSize, int TreeMode, int num
 
 	VL_PRINTF("Voc Tree Train Started Depth: %d, Branch: %d \n", m_depth, m_K) ;
 	vl_tic();
-	vl_size dataSize = (vl_size)DataSize;
+	vl_size dataSize = vl_size(DataSize);
 	vl_size nThr = vl_get_max_threads();
 	vl_set_num_threads(nThr);
-	vl_hikm_train(&vocabTree,data,(vl_size)dataSize);	
+	vl_hikm_train(&vocabTree,data,vl_size(dataSize));	
 	VL_PRINTF("Voc Tree Train Time: %.3f s\n", vl_toc ()) ;	
 	
 	m_init = 1;
@@ -155,25 +155,25 @@ void TVoctreeVLFeat::clean(void) {
 	}
 }
 
-int TVoctreeVLFeat::ReturnMaxNodeNumber(vl_size depth , vl_size K )
+int TVoctreeVLFeat::ReturnMaxNodeNumber(vl_size depth , vl_size K ) const
 {
 	
 	if( depth>2)
 	{
-		return pow((double)K, (double) depth-1) + ReturnMaxNodeNumber(depth-2,K);
+		return pow(double(K), double(depth)-1) + ReturnMaxNodeNumber(depth-2,K);
 	}
 	else
 		return K+1;
 };
 
-int TVoctreeVLFeat::ReturnMaxNodeNumber()
+int TVoctreeVLFeat::ReturnMaxNodeNumber() const
 {
 	vl_size depth = m_depth;
 	vl_size K = m_K;
 	
 	if( depth>2)
 	{
-		return pow((double)K, (double) depth-1) + ReturnMaxNodeNumber(depth-2,K);
+		return pow(double(K), double(depth)-1) + ReturnMaxNodeNumber(depth-2,K);
 	}
 	else
 		return K+1;
@@ -190,7 +190,7 @@ void TVoctreeVLFeat::dump_node(VlHIKMNode* node,int *c, FILE* f)
 
 void TVoctreeVLFeat::dump_tree(VlHIKMNode* root, int *c, FILE* f)
 {
-	if (root == NULL) 
+	if (root == nullptr) 
 		return;
 
 	dump_node(root,c, f);
@@ -224,7 +224,7 @@ int TVoctreeVLFeat::write_hikm(const char* FileName)
 	fwrite(&vocabTree.method, sizeof(int), 1, f);
 	fwrite(&vocabTree.verb, sizeof(int), 1, f);
 
-	dump_tree(root, 0, f);
+	dump_tree(root, nullptr, f);
 	fclose(f);
 }
 
@@ -239,7 +239,7 @@ void TVoctreeVLFeat::load_node(VlHIKMNode* node, int *c, FILE* f)
 
 void TVoctreeVLFeat::load_tree(VlHIKMNode** root, int c, FILE* f)
 {
-	VlHIKMNode* node = 0;
+	VlHIKMNode* node = nullptr;
 	if (c < 0) 
 		return;
 
@@ -308,7 +308,7 @@ int TVoctreeVLFeat::read_hikm(const char* FileName)
 
 	//this->vocabTree = vl_hikm_new(m_method);
 	this->vocabTree.method = m_method;
-	this->vocabTree.root = 0;
+	this->vocabTree.root = nullptr;
 	this->vocabTree.max_niters = m_max_niters;
 	vl_hikm_init(&this->vocabTree, m_M, m_K, m_depth);
 	
@@ -325,13 +325,13 @@ int TVoctreeVLFeat::read_hikm(const char* FileName)
 }
 
 void TVoctreeVLFeat::quantize(unsigned int *vwi, unsigned char *sift){
-	vl_uint32 *asgn = new vl_uint32[(int)m_depth]();
-	vl_hikm_push(&vocabTree, asgn,sift,(vl_size)1);
+	vl_uint32 *asgn = new vl_uint32[int(m_depth)]();
+	vl_hikm_push(&vocabTree, asgn,sift,vl_size(1));
 	*vwi=0;
 	//printf("Full path : ");
-	for(int i=0; i<(int)m_depth; i++)
+	for(int i=0; i<int(m_depth); i++)
 	{
-		*vwi = *vwi*(int)m_K +asgn[i];
+		*vwi = *vwi*int(m_K) +asgn[i];
 		//printf("%d ", asgn[i]);
 		//*vwi |= ((asgn[i]<<i))); // supports depth<=10, branch<=9
 		//*vwi |= ((asgn[i]<<((int)m_depth-i-1))); // supports depth<=10, branch<=9		

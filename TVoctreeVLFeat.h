@@ -41,8 +41,8 @@ public:
 	void clean(void);
 
 
-	int ReturnMaxNodeNumber(vl_size depth , vl_size K );
-	int ReturnMaxNodeNumber();
+	int ReturnMaxNodeNumber(vl_size depth , vl_size K ) const;
+	int ReturnMaxNodeNumber() const;
 	void dump_node(VlHIKMNode* node, int *c, FILE* f);
 	void dump_tree(VlHIKMNode* root, int *c, FILE* f);
 	void load_node(VlHIKMNode* node, int *c, FILE* f);

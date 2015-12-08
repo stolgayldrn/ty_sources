@@ -401,8 +401,8 @@ int build_dog_grd_rot_pyr(
 	float * src2Data;  // Higher layer gpry
 	float * srcData; // current layer gpyr
 	float * dogData; // src2Data - srcData
-	float * grdData;
-	float * rotData;
+	float * grdData = NULL;
+	float * rotData = NULL;
 
 	for (int i = 0; i < nOctaves; i ++)
 	{
@@ -931,7 +931,7 @@ bool refine_local_extrema(vector< ImageObj<float> > & dogPyr,
 	int r = (int)kpt.ri;
 	int c = (int)kpt.ci;
 
-	float * currData;
+	float * currData = NULL;
 	float * lowData;
 	float * highData;
 
