@@ -1,15 +1,13 @@
 #include "TVoctreeVLFeat.h"
 
-#include <iostream>
-#include <string>
-
 using namespace std;
 
 #define VL_FEAT_HIKM_TREE_MAGIC 2494285466
 
 
 
-int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc, unsigned int dimOfDesc, FeatureType ft)
+int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, 
+	vl_size &numTotalDesc, vl_size maxTotalDesc, unsigned int dimOfDesc, FeatureType ft, unsigned int sizeOfDescType)
 {
 	vector<string> folderList;
 	get_folder_list(readFolderPath.c_str(),folderList);
@@ -17,7 +15,8 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 	int nthr = omp_get_max_threads();
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
 	omp_set_num_threads(nthr); // Use 4 threads for all consecutive parallel regions		
-	for (int k = 0; k < folderList.size(); k++)
+	//for (int k = 0; k < folderList.size(); k++)
+	for (int k = 0; k < 5; k++)
 	{
 		string subFolderPath = readFolderPath + "/" + folderList[k] + "/" + dsc_type;
 		vector<string> subFolderList;
@@ -36,9 +35,10 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 
 				string dscPath = subsubFolderPath + "/" + dscList[ m];
 				uchar_descriptors dscFile(dscPath.c_str(), ft);
-				dscFile.read_dsc_v1();
+				dscFile.read_dsc();
+				//dscFile.read_dsc_v1();
 				unsigned int numDesc = dscFile.get_num_descriptors();
-				memcpy(descs + (numTotalDesc * dimOfDesc), dscFile.get_data(), (numDesc)*dimOfDesc*sizeof(unsigned char));
+				memcpy(descs + (numTotalDesc * dimOfDesc), dscFile.get_data(), (numDesc)*dimOfDesc*sizeOfDescType);
 				numTotalDesc += numDesc;
 				if(	m % 1000 == 0 ) printf("\rProcess Rate in Folder: %.2f%%, Total Rate: %.2f",100.0*m/10000,( m*1.00 + (10000*l + (100000*k)))/10000);	
 			}
