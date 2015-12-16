@@ -9,7 +9,7 @@ public:
 	TVoctree(void);
 	virtual ~TVoctree(void);
 	
-	// Class initialization, memory allocation and voctree read from file
+	// Class VocTreeInit, memory allocation and voctree read from file
 	// Param: fname ... (IN) path to voctree
 	virtual int init(const char *fname, int truncate = 0) = 0;
 
