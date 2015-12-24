@@ -785,8 +785,11 @@ int dirExists(const char *path)
 }
 int pathControl(string Path)
 {
+	
 	if(!dirExists(Path.c_str()))
 	{
+		string parentFold = Path.substr(0, Path.rfind("/"));
+		pathControl(parentFold);
 		wstring stemp = wstring(Path.begin(), Path.end());
 		LPCWSTR szDirPath = stemp.c_str();
 		// Create a new directory.
