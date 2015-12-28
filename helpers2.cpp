@@ -24,16 +24,16 @@ using namespace std;
 //}
 //
 //
-const char *get_filename_ext(const char *filename) 
+const char *GET_FileNameExt(const char *filename) 
 {
     const char *dot = strrchr(filename, '.');
     if(!dot || dot == filename) return "";
     return dot + 1;
 }
 //
-int is_sig_file(const char *filename)
+int IS_SigFile(const char *filename)
 {
-	const char* ext = get_filename_ext(filename);
+	const char* ext = GET_FileNameExt(filename);
 	size_t lenExt = strlen(ext);
 
 	if (lenExt==3)
@@ -47,9 +47,9 @@ int is_sig_file(const char *filename)
 	return 0;
 }
 
-int is_dsc_file(const char *filename)
+int IS_DscFile(const char *filename)
 {
-	const char* ext = get_filename_ext(filename);
+	const char* ext = GET_FileNameExt(filename);
 	size_t lenExt = strlen(ext);
 
 	if (lenExt==3)
@@ -63,9 +63,9 @@ int is_dsc_file(const char *filename)
 	return 0;
 }
 
-int is_image_file(const char *filename)
+int IS_ImageFile(const char *filename)
 {
-	const char* ext = get_filename_ext(filename);
+	const char* ext = GET_FileNameExt(filename);
 	int lenExt = strlen(ext);
 
 	if (lenExt==3)
@@ -92,7 +92,7 @@ int is_image_file(const char *filename)
 	return 0;
 }
 
-int file_exist (const char *filename)
+int FileExist (const char *filename)
 {
   struct stat   buffer;   
   return (stat (filename, &buffer) == 0);
@@ -476,7 +476,7 @@ int file_exist (const char *filename)
 /////////////////////////////////////// NEW FUNCTIONS GO BEYOND THIS POINT //////////////////////////////
 
 
-int get_directory_signatures(const char* Folder, std::vector<string> &fileList)
+int GET_DirectorySignatures(const char* Folder, std::vector<string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -500,7 +500,7 @@ int get_directory_signatures(const char* Folder, std::vector<string> &fileList)
 			switch (ent->d_type) 
 			{
 			case DT_REG:
-				if (is_sig_file(temp->d_name))
+				if (IS_SigFile(temp->d_name))
 				{
 					fileList.push_back(string( temp->d_name ));
 					//t_list_push_list(&fileList,temp);
@@ -522,7 +522,7 @@ int get_directory_signatures(const char* Folder, std::vector<string> &fileList)
 	return i;
 }
 
-int get_directory_dsc(const char* Folder, std::vector<string> &fileList)
+int GET_DirectoryDSCs(const char* Folder, std::vector<string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -546,7 +546,7 @@ int get_directory_dsc(const char* Folder, std::vector<string> &fileList)
 			switch (ent->d_type) 
 			{
 			case DT_REG:
-				if (is_dsc_file(temp->d_name))
+				if (IS_DscFile(temp->d_name))
 				{
 					fileList.push_back(string( temp->d_name ));
 					//t_list_push_list(&fileList,temp);
@@ -567,7 +567,7 @@ int get_directory_dsc(const char* Folder, std::vector<string> &fileList)
 	return i;
 }
 
-int get_directory_images(const char* Folder, std::vector<string> &fileList)
+int GET_DirectoryImages(const char* Folder, std::vector<string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -591,7 +591,7 @@ int get_directory_images(const char* Folder, std::vector<string> &fileList)
 			switch (ent->d_type) 
 			{
 			case DT_REG:
-				if (is_image_file(temp->d_name))
+				if (IS_ImageFile(temp->d_name))
 				{
 					fileList.push_back(string( temp->d_name ));
 					//t_list_push_list(&fileList,temp);
@@ -613,7 +613,7 @@ int get_directory_images(const char* Folder, std::vector<string> &fileList)
 	return i;
 }
 
-int get_folder_list(const char* Folder, std::vector<string> &fileList)
+int GET_FolderList(const char* Folder, std::vector<string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -772,7 +772,7 @@ Mat makeCanvas(std::vector<Mat>& vecMat, int windowHeight, int nRows) {
 	return canvasImage;
 }
 
-int dirExists(const char *path)
+int DirExists(const char *path)
 {
 	if( _access( path, 0 ) == 0 ){
 
@@ -783,13 +783,13 @@ int dirExists(const char *path)
 	}
 	return false;
 }
-int pathControl(string Path)
+int PathControl(string Path)
 {
 	
-	if(!dirExists(Path.c_str()))
+	if(!DirExists(Path.c_str()))
 	{
 		string parentFold = Path.substr(0, Path.rfind("/"));
-		pathControl(parentFold);
+		PathControl(parentFold);
 		wstring stemp = wstring(Path.begin(), Path.end());
 		LPCWSTR szDirPath = stemp.c_str();
 		// Create a new directory.
@@ -808,7 +808,7 @@ int pathControl(string Path)
 		return 1;
 }
 
-void fileCopy(string sourePath, string destPath)
+void FileCopy(string sourePath, string destPath)
 {
 	ifstream source(sourePath, ios::binary);
 	ofstream dest(destPath, ios::binary);

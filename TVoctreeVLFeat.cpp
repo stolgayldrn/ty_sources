@@ -10,7 +10,7 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 	vl_size &numTotalDesc, vl_size maxTotalDesc, unsigned int dimOfDesc, FeatureType ft, unsigned int sizeOfDescType)
 {
 	vector<string> folderList;
-	get_folder_list(readFolderPath.c_str(),folderList);
+	GET_FolderList(readFolderPath.c_str(),folderList);
 	//int numOfParallel = 32;
 	int nthr = omp_get_max_threads();
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
@@ -20,7 +20,7 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 	{
 		string subFolderPath = readFolderPath + "/" + folderList[k] + "/" + dsc_type;
 		vector<string> subFolderList;
-		get_folder_list(subFolderPath.c_str(), subFolderList);
+		GET_FolderList(subFolderPath.c_str(), subFolderList);
 		clock_t start = clock();
 		double duration;
 		
@@ -28,7 +28,7 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 		{
 			string subsubFolderPath = subFolderPath + "/" + subFolderList[l];
 			vector<string> dscList;
-			get_directory_dsc(subsubFolderPath.c_str(), dscList);
+			GET_DirectoryDSCs(subsubFolderPath.c_str(), dscList);
 			#pragma omp parallel for
 			for (int m = 0; m < dscList.size(); m++)
 			{
@@ -40,7 +40,7 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 				unsigned int numDesc = dscFile.get_num_descriptors();
 				memcpy(descs + (numTotalDesc * dimOfDesc), dscFile.get_data(), (numDesc)*dimOfDesc*sizeOfDescType);
 				numTotalDesc += numDesc;
-				if(	m % 1000 == 0 ) printf("\rProcess Rate in Folder: %.2f%%, Total Rate: %.2f",100.0*m/10000,( m*1.00 + (10000*l + (100000*k)))/10000);	
+				if(	m % 1000 == 0 ) printf("\rProcess Rate in Folder: %.2f%%, Total Rate: %2f",100.0*m/10000,( m*1.00 + (10000*l + (100000*k)))/10000);	
 			}
 			
 		}
