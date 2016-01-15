@@ -312,6 +312,7 @@ void TVoctreeVLFeat::quantize(unsigned int *vwi, unsigned char *sift){
 		//*vwi |= ((asgn[i]<<i))); // supports depth<=10, branch<=9
 		//*vwi |= ((asgn[i]<<((int)m_depth-i-1))); // supports depth<=10, branch<=9		
 	}
+	delete[] asgn;
 	//printf("\n");
 }
 
