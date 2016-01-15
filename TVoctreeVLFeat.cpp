@@ -1,5 +1,5 @@
 #include "TVoctreeVLFeat.h"
-
+#include "descriptors.h"
 #include <iostream>
 #include <string>
 
@@ -9,13 +9,13 @@ using namespace std;
 
 
 
-int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc)
+int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc, unsigned int dimOfDesc)
 {
 	vector<string> folderList;
 	get_folder_list(readFolderPath.c_str(),folderList);
-	int numOfParallel = 32;
+	int numOfParallel = 8;
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
-	omp_set_num_threads(32); // Use 4 threads for all consecutive parallel regions		
+	omp_set_num_threads(8); // Use 4 threads for all consecutive parallel regions		
 	for (int k = 0; k < folderList.size(); k++)
 	{
 		string subFolderPath = readFolderPath + "/" + folderList[k] + "/" + dsc_type;
@@ -30,39 +30,14 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 			vector<string> dscList;
 			get_directory_dsc(subsubFolderPath.c_str(), dscList);
 			int cores = 16;
-			#pragma omp parallel for
+			//#pragma omp parallel for
 			for (int m = 0; m < dscList.size(); m++)
 			{
-//				unsigned char** descs_fork = new unsigned char*[16];
-//				unsigned int numDesc_fork[16];
-////////////////////////////////////////////////////////////////////////////
-//				#pragma omp parallel for
-//				for (int p = 0; p < cores; p++)
-//				{
-//					string dscPath = subsubFolderPath + "/" + dscList[ m + p];
-//					type1_descriptors dscFile(dscPath,FeatureType::AKAZE_FEATS);
-//					dscFile.read_dsc_v1();
-//					numDesc_fork[p] = dscFile.get_num_descriptors();
-//					descs_fork[p] = new unsigned char [numDesc_fork[p]*61];
-//					memcpy(descs_fork[p], dscFile.get_data(), (numDesc_fork[p])*61*sizeof(unsigned char));
-//				}
-////////////////////////////////////////////////////////////////////////////
-//
-//				for (int p = 0; p < cores; p++)
-//				{
-//					memcpy(descs+(numTotalDesc*61), descs_fork[p], (numDesc_fork[p])*61*sizeof(unsigned char));
-//					numTotalDesc += numDesc_fork[p];
-//					delete[] descs_fork[p];
-//					descs_fork[p] = NULL;
-//				}
-//				delete[] descs_fork;
-//				descs_fork = NULL;
-
 				string dscPath = subsubFolderPath + "/" + dscList[ m];
-				uchar_descriptors dscFile(dscPath.c_str(),FeatureType::AKAZE_FEATS);
+				uchar_descriptors dscFile(dscPath.c_str(),FeatureType::EZ_SIFT);
 				dscFile.read_dsc_v1();
 				unsigned int numDesc = dscFile.get_num_descriptors();
-				memcpy(descs+(numTotalDesc*61), dscFile.get_data(), (numDesc)*61*sizeof(unsigned char));
+				memcpy(descs + (numTotalDesc * dimOfDesc), dscFile.get_data(), (numDesc)*dimOfDesc*sizeof(unsigned char));
 				numTotalDesc += numDesc;
 				if(	m % 1000 == 0 ) printf("\rProcess Rate in Folder: %.2f%%, Total Rate: %.2f",100.0*m/10000,( m*1.00 + (10000*l + (100000*k)))/10000);	
 			}
@@ -121,7 +96,7 @@ int TVoctreeVLFeat::init(const uchar *data , int DataSize, int TreeMode, int num
 	m_M = numOfDimension; 
 	m_max_niters = 50;
 	m_method = VlIKMAlgorithms::VL_IKM_ELKAN;
-	m_verb = 5;	
+	m_verb = 1;	
 
 	vocabTree.depth = m_depth;
 	vocabTree.K = m_K;

@@ -2,7 +2,6 @@
 #define VLFEAT_VOCTREE
 
 #include "helpers2.h"
-#include "descriptors.h"
 #include <stdio.h>
 #include "vl/generic.h"
 #include "vl/hikmeans.h"
@@ -23,7 +22,7 @@
 enum VLFeat_Init_Mode { Small_Tree=1, Middle_Tree, Large_Tree, TEST_Tree};
 //const char * VL_FeatTree_Names [] = {"Small_Tree", "Middle_Tree", "Large_Tree", "TEST_Tree"};
 
-int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc);
+int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc, unsigned int dimOfDesc);
 // sen o inheritance'larla ugrasma. cok fazla sey var. ben yapiyorum.
 // o zman bunu eski haliyle çalıştırıp hataya bakalım
 // aynen
