@@ -293,8 +293,8 @@ int TVoctreeVLFeat::read_hikm(const char* FileName)
 	
 	//m_stupidCount ++;
 	load_tree(&this->vocabTree.root, m_depth-1, f);
+	
 	fclose(f);
-
 	delete[] m_centerTemp;
 	delete[] m_interDist;
 	return 1;

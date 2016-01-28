@@ -601,8 +601,11 @@ int GET_DirectoryImages(const char* Folder, std::vector<string> &fileList)
 			default:
 				break;
 			}
+
+			delete temp;
 		}
 		closedir (dir);
+		delete ent;
 	}
 	else
 	{
@@ -649,6 +652,7 @@ int GET_FolderList(const char* Folder, std::vector<string> &fileList)
 			default:
 				break;
 			}
+			delete[] temp;
 		}
 		closedir (dir);
 	}
@@ -785,10 +789,9 @@ int DirExists(const char *path)
 }
 int PathControl(string Path)
 {
-	
 	if(!DirExists(Path.c_str()))
 	{
-		string parentFold = Path.substr(0, Path.rfind("/"));
+		string parentFold = Path.substr(0, Path.rfind("\\"));
 		PathControl(parentFold);
 		wstring stemp = wstring(Path.begin(), Path.end());
 		LPCWSTR szDirPath = stemp.c_str();
