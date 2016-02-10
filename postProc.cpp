@@ -293,7 +293,7 @@ int cv_FLANN_Matcher(Mat &descriptors_1, Mat &descriptors_2,std::vector< DMatch 
 			}
 
 			for( int i = 0; i < matches.size(); i++ )
-			{ if( matches[i].distance <= max(2*min_dist, 2.0) )
+			{ if( matches[i].distance <= max(2*min_dist, 250.0) )
 			{ good_matches.push_back( matches[i]); }
 			}
 		}
@@ -425,7 +425,7 @@ int cv_GeoRR_Scoring_Location(std::vector<Point2f> &coords_Q, std::vector<Point2
 	if ( scoreMode != T_SCORE_GV)
 	{
 		//Histogram vector for log distance ratios
-		vector<float> bins(50, 0.0);
+		vector<float> bins(110, 0.0);
 		score = 0;
 		if(matches.size()>1)
 		{		
@@ -451,9 +451,9 @@ int cv_GeoRR_Scoring_Location(std::vector<Point2f> &coords_Q, std::vector<Point2
 					{
 						double log_dist_ratio = log(distanceQ/distanceS);
 
-						if( (log_dist_ratio>=-20) && (log_dist_ratio<=20) )
+						if( (log_dist_ratio>=-20) && (log_dist_ratio<= 20) )
 						{
-							log_dist_ratio=floorf((log_dist_ratio * 1.25f)+25);  //That means the logaritmic ratios bw -10 to 10 are altered bw 0 to 50.
+							log_dist_ratio=floorf((log_dist_ratio * 2.75f) + 55);  //That means the logaritmic ratios bw -10 to 10 are altered bw 0 to 50.
 							//All rational numbers from specific ranges(0.4) are altered to integer, in other word normalized.
 							//For exm, [-10,-9.6) as 0 and [-9.6, -9.2) as 1.... [0,0.4) as 25 .........
 							bins[(int)log_dist_ratio]++;
