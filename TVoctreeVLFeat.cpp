@@ -35,10 +35,10 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 
 				string dscPath = subsubFolderPath + "/" + dscList[ m];
 				uchar_descriptors dscFile(dscPath.c_str(), ft);
-				dscFile.read_dsc();
-				//dscFile.read_dsc_v1();
-				unsigned int numDesc = dscFile.get_num_descriptors();
-				memcpy(descs + (numTotalDesc * dimOfDesc), dscFile.get_data(), (numDesc)*dimOfDesc*sizeOfDescType);
+				dscFile.ReadDSC();
+				//dscFile.ReadDSC__ver1();
+				unsigned int numDesc = dscFile.GetNumOfDescriptors();
+				memcpy(descs + (numTotalDesc * dimOfDesc), dscFile.GetUCHAR_descriptors(), (numDesc)*dimOfDesc*sizeOfDescType);
 				numTotalDesc += numDesc;
 				if(	m % 1000 == 0 ) printf("\rProcess Rate in Folder: %.2f%%, Total Rate: %2f",100.0*m/10000,( m*1.00 + (10000*l + (100000*k)))/10000);	
 			}

@@ -39,12 +39,13 @@ void computeReprojError( const std::vector<Point2f> m1, const std::vector<Point2
 	//var /= (count-1);
 }
 
-void ransacTestFund(const vector<DMatch>& matches, const vector<Point2f>& keypoints1, const vector<Point2f>& keypoints2, vector<DMatch>& outMatches) 
+void ransacTestFund(const std::vector<DMatch>& matches, const std::vector<Point2f>& keypoints1, 
+	const std::vector<Point2f>& keypoints2, std::vector<DMatch>& outMatches) 
 {
 	// Convert keypoints into Point2f
-	vector<Point2f> points1, points2;
+	std::vector<cv::Point2f> points1, points2;
 
-	for (vector<DMatch>::const_iterator it = matches.begin(); it != matches.end(); ++it) 
+	for (std::vector<DMatch>::const_iterator it = matches.begin(); it != matches.end(); ++it) 
 	{	
 		// assert(it->queryIdx<keypoints1.size());
 		// assert(it->trainIdx<keypoints2.size());
@@ -60,7 +61,7 @@ void ransacTestFund(const vector<DMatch>& matches, const vector<Point2f>& keypoi
 	}
 
 	// Compute F matrix using RANSAC
-	vector<uchar> inliers(points1.size(),0);
+	std::vector<uchar> inliers(points1.size(),0);
 
 	Mat fundemental= findFundamentalMat(
 		Mat(points1), Mat(points2), // matching points
@@ -70,8 +71,8 @@ void ransacTestFund(const vector<DMatch>& matches, const vector<Point2f>& keypoi
 	if (inliers.size() > 1)
 	{
 		// extract the surviving (inliers) matches
-		vector<uchar>::const_iterator  itIn = inliers.begin();
-		vector<DMatch>::const_iterator itM  = matches.begin();
+		std::vector<uchar>::const_iterator  itIn = inliers.begin();
+		std::vector<DMatch>::const_iterator itM  = matches.begin();
 
 		// for all matches
 		for ( ; itIn != inliers.end(); ++itIn, ++itM)
@@ -184,12 +185,13 @@ double estimate_homography(std::vector<Point2f> &points1, std::vector<Point2f> &
     return -1;
 }
 
-double ransacTestHomography(const vector<DMatch>& matches, const vector<Point2f>& keypoints1, const vector<Point2f>& keypoints2, vector<DMatch>& outMatches, const double threshold = 10)
+double ransacTestHomography(const std::vector<DMatch>& matches, const std::vector<Point2f>& keypoints1, 
+	const std::vector<Point2f>& keypoints2, std::vector<DMatch>& outMatches, const double threshold = 10)
 {
-	vector<Point2f> points1, points2;
-	vector<unsigned int> Inliers;
+	std::vector<Point2f> points1, points2;
+	std::vector<unsigned int> Inliers;
 
-	for (vector<DMatch>::const_iterator it = matches.begin(); it != matches.end(); ++it) 
+	for (std::vector<DMatch>::const_iterator it = matches.begin(); it != matches.end(); ++it) 
 	{	
 		assert(it->queryIdx<keypoints1.size());
 		assert(it->trainIdx<keypoints2.size());
@@ -425,7 +427,7 @@ int cv_GeoRR_Scoring_Location(std::vector<Point2f> &coords_Q, std::vector<Point2
 	if ( scoreMode != T_SCORE_GV)
 	{
 		//Histogram vector for log distance ratios
-		vector<float> bins(110, 0.0);
+		std::vector<float> bins(110, 0.0);
 		score = 0;
 		if(matches.size()>1)
 		{		
@@ -486,7 +488,7 @@ int cv_GeoRR_Scoring_Location(std::vector<Point2f> &coords_Q, std::vector<Point2
 	}
 	else
 	{
-		vector<DMatch> outMatches; // maybe we'll use this some day
+		std::vector<DMatch> outMatches; // maybe we'll use this some day
 		score = (int)ransacTestHomography(matches, coords_Q, coords_S, outMatches) ;
 		status = 0;
 	}	

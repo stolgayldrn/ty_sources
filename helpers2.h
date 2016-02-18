@@ -20,8 +20,6 @@
 //#include "t_common_defs.h"
 //
 
-using namespace std;
-
 // directory
 //char* read_file_to_string(const char* input_file_name);
 const char *GET_FileNameExt(const char *filename) ;
@@ -30,18 +28,18 @@ int IS_DscFile(const char *filename);
 int IS_ImageFile(const char *filename);
 int FileExist ( const char *filename);
 //int GET_DirectorySignatures(const char* Folder, string** FileList);
-int GET_DirectorySignatures(const char* Folder, std::vector<string> &fileList);
-int GET_DirectoryDSCs(const char* Folder, std::vector<string> &fileList);
-int GET_DirectoryImages(const char* Folder, std::vector<string> &fileList);
-int GET_FolderList(const char* Folder, std::vector<string> &fileList);
+int GET_DirectorySignatures(const char* Folder, std::vector<std::string> &fileList);
+int GET_DirectoryDSCs(const char* Folder, std::vector<std::string> &fileList);
+int GET_DirectoryImages(const char* Folder, std::vector<std::string> &fileList);
+int GET_FolderList(const char* Folder, std::vector<std::string> &fileList);
 // return negative if it cannot read it. 0 on success
 int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDescByte, float** xCoords, float** yCoords, float** orientations, float** scales);
-string int2string(int num);
+std::string int2string(int num);
 std::string longlongint2string(long long int num);
 cv::Mat makeCanvas(std::vector<cv::Mat>& vecMat, int windowHeight, int nRows);
 int DirExists(const char *path);
-int PathControl(string Path);
-void FileCopy(string sourePath, string destPath);
+int PathControl(std::string Path);
+void FileCopy(std::string sourePath, std::string destPath);
 std::size_t callback( const char* in, std::size_t size, std::size_t num, std::string* out);
 // json
 //int decode_query_json(const char* Query, char* filePath, char* id, int* NumMatches);
