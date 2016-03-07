@@ -2,9 +2,6 @@
 //#include "cmp.h"
 #include "helpers2.h"
 
-using namespace cv;
-using namespace std;
-//#include "cmp.h"
 
 //typedef enum TImageOpMode {T_MODE_SEARCH = 0, T_MODE_INSERT = 1, T_MODE_REMOVE = 2};
 
@@ -423,7 +420,7 @@ int FileExist (const char *filename)
 //
 //}
 
-//// "tcp://192.168.1.102:5555"
+//// "tcp://192.168.1.2:5555"
 //void connect_socket(const char* ip, void** context, void** requester)
 //{
 //	*context = zmq_ctx_new ();
@@ -476,7 +473,7 @@ int FileExist (const char *filename)
 /////////////////////////////////////// NEW FUNCTIONS GO BEYOND THIS POINT //////////////////////////////
 
 
-int GET_DirectorySignatures(const char* Folder, std::vector<string> &fileList)
+int GET_DirectorySignatures(const char* Folder, std::vector<std::string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -502,7 +499,7 @@ int GET_DirectorySignatures(const char* Folder, std::vector<string> &fileList)
 			case DT_REG:
 				if (IS_SigFile(temp->d_name))
 				{
-					fileList.push_back(string( temp->d_name ));
+					fileList.push_back(std::string( temp->d_name ));
 					//t_list_push_list(&fileList,temp);
 					numFiles++;
 					break;
@@ -522,7 +519,7 @@ int GET_DirectorySignatures(const char* Folder, std::vector<string> &fileList)
 	return i;
 }
 
-int GET_DirectoryDSCs(const char* Folder, std::vector<string> &fileList)
+int GET_DirectoryDSCs(const char* Folder, std::vector<std::string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -548,7 +545,7 @@ int GET_DirectoryDSCs(const char* Folder, std::vector<string> &fileList)
 			case DT_REG:
 				if (IS_DscFile(temp->d_name))
 				{
-					fileList.push_back(string( temp->d_name ));
+					fileList.push_back(std::string( temp->d_name ));
 					//t_list_push_list(&fileList,temp);
 					numFiles++;
 					break;
@@ -567,7 +564,7 @@ int GET_DirectoryDSCs(const char* Folder, std::vector<string> &fileList)
 	return i;
 }
 
-int GET_DirectoryImages(const char* Folder, std::vector<string> &fileList)
+int GET_DirectoryImages(const char* Folder, std::vector<std::string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -593,7 +590,7 @@ int GET_DirectoryImages(const char* Folder, std::vector<string> &fileList)
 			case DT_REG:
 				if (IS_ImageFile(temp->d_name))
 				{
-					fileList.push_back(string( temp->d_name ));
+					fileList.push_back(std::string( temp->d_name ));
 					//t_list_push_list(&fileList,temp);
 					numFiles++;
 					break;
@@ -616,7 +613,7 @@ int GET_DirectoryImages(const char* Folder, std::vector<string> &fileList)
 	return i;
 }
 
-int GET_FolderList(const char* Folder, std::vector<string> &fileList)
+int GET_FolderList(const char* Folder, std::vector<std::string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -644,7 +641,7 @@ int GET_FolderList(const char* Folder, std::vector<string> &fileList)
 				
 				if(strcmp(ent->d_name,".") && strcmp(ent->d_name , ".."))
 				{
-					fileList.push_back(string( ent->d_name ));
+					fileList.push_back(std::string( ent->d_name ));
 					//t_list_push_list(&fileList,temp);
 					numFiles++;
 				}
@@ -664,6 +661,9 @@ int GET_FolderList(const char* Folder, std::vector<string> &fileList)
 
 	return i;
 }
+
+///////////////////////////////////
+///////////////////////////////////
 
 int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDescByte, float** xCoords, float** yCoords, float** orientations, float** scales)
 {
@@ -708,25 +708,35 @@ int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDe
 	return 0;
 }
 
+/*
+Convert
+*/
 
 std::string int2string(int num)
 {
-	stringstream ss;
+	std::stringstream ss;
 	ss << num;
-	string str = ss.str();
+	std::string str = ss.str();
 	return str;
 }
 
 std::string longlongint2string(long long int num)
 {
-	stringstream ss;
+	std::stringstream ss;
 	ss << num;
-	string str = ss.str();
+	std::string str = ss.str();
 	return str;
 }
 
+std::string float2string(float number)
+{
+	std::ostringstream buff;
+	buff << number;
+	return buff.str();
+}
+//
 
-Mat makeCanvas(std::vector<Mat>& vecMat, int windowHeight, int nRows) {
+cv::Mat makeCanvas(std::vector<cv::Mat>& vecMat, int windowHeight, int nRows) {
 	int N = vecMat.size();
 	nRows  = nRows > N ? N : nRows; 
 	int edgeThickness = 10;
@@ -749,23 +759,23 @@ Mat makeCanvas(std::vector<Mat>& vecMat, int windowHeight, int nRows) {
 		}
 	}
 	int windowWidth = maxRowLength;
-	Mat canvasImage(windowHeight, windowWidth, CV_8UC3, Scalar(0, 0, 0));
+	cv::Mat canvasImage(windowHeight, windowWidth, CV_8UC3, cv::Scalar(0, 0, 0));
 
 	for (int k = 0, i = 0; i < nRows; i++) {
 		int y = i * resizeHeight + (i + 1) * edgeThickness;
 		int x_end = edgeThickness;
 		for (int j = 0; j < imagesPerRow && k < N; k++, j++) {
 			int x = x_end;
-			Rect roi(x, y, resizeWidth[k], resizeHeight);
-			Size s = canvasImage(roi).size();
+			cv::Rect roi(x, y, resizeWidth[k], resizeHeight);
+			cv::Size s = canvasImage(roi).size();
 			// change the number of channels to three
-			Mat target_ROI(s, CV_8UC3);
+			cv::Mat target_ROI(s, CV_8UC3);
 			if (vecMat[k].channels() != canvasImage.channels()) {
 				if (vecMat[k].channels() == 1) {
-					cvtColor(vecMat[k], target_ROI,COLOR_GRAY2BGR);
+					cvtColor(vecMat[k], target_ROI, cv::COLOR_GRAY2BGR);
 				}
 			}
-			resize(target_ROI, target_ROI, s);
+			cv::resize(target_ROI, target_ROI, s);
 			if (target_ROI.type() != canvasImage.type()) {
 				target_ROI.convertTo(target_ROI, canvasImage.type());
 			}
@@ -787,13 +797,13 @@ int DirExists(const char *path)
 	}
 	return false;
 }
-int PathControl(string Path)
+int PathControl(std::string Path)
 {
 	if(!DirExists(Path.c_str()))
 	{
-		string parentFold = Path.substr(0, Path.rfind("\\"));
+		std::string parentFold = Path.substr(0, Path.rfind("\\"));
 		PathControl(parentFold);
-		wstring stemp = wstring(Path.begin(), Path.end());
+		std::wstring stemp = std::wstring(Path.begin(), Path.end());
 		LPCWSTR szDirPath = stemp.c_str();
 		// Create a new directory.
 		if(!CreateDirectoryW(szDirPath, NULL))
@@ -811,15 +821,15 @@ int PathControl(string Path)
 		return 1;
 }
 
-void FileCopy(string sourePath, string destPath)
+void FileCopy(std::string sourePath, std::string destPath)
 {
-	ifstream source(sourePath, ios::binary);
-	ofstream dest(destPath, ios::binary);
+	std::ifstream source(sourePath, std::ios::binary);
+	std::ofstream dest(destPath, std::ios::binary);
 
-	istreambuf_iterator<char> begin_source(source);
-	istreambuf_iterator<char> end_source;
-	ostreambuf_iterator<char> begin_dest(dest); 
-	copy(begin_source, end_source, begin_dest);
+	std::istreambuf_iterator<char> begin_source(source);
+	std::istreambuf_iterator<char> end_source;
+	std::ostreambuf_iterator<char> begin_dest(dest);
+	std::copy(begin_source, end_source, begin_dest);
 
 	source.close();
 	dest.close();

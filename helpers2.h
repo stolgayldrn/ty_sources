@@ -36,6 +36,7 @@ int GET_FolderList(const char* Folder, std::vector<std::string> &fileList);
 int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDescByte, float** xCoords, float** yCoords, float** orientations, float** scales);
 std::string int2string(int num);
 std::string longlongint2string(long long int num);
+std::string float2string(float number);
 cv::Mat makeCanvas(std::vector<cv::Mat>& vecMat, int windowHeight, int nRows);
 int DirExists(const char *path);
 int PathControl(std::string Path);
