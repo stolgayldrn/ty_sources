@@ -663,7 +663,6 @@ int GET_FolderList(const char* Folder, std::vector<std::string> &fileList)
 }
 
 ///////////////////////////////////
-///////////////////////////////////
 
 int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDescByte, float** xCoords, float** yCoords, float** orientations, float** scales)
 {
@@ -707,12 +706,18 @@ int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDe
 
 	return 0;
 }
-
-/*
-Convert
-*/
+////////////////////////////////////////////////////////////////
+/*Convert*/
 
 std::string int2string(int num)
+{
+	std::stringstream ss;
+	ss << num;
+	std::string str = ss.str();
+	return str;
+}
+
+std::string uint2string(uint num)
 {
 	std::stringstream ss;
 	ss << num;
@@ -734,7 +739,7 @@ std::string float2string(float number)
 	buff << number;
 	return buff.str();
 }
-//
+////////////////////////////////////////////////////////////////
 
 cv::Mat makeCanvas(std::vector<cv::Mat>& vecMat, int windowHeight, int nRows) {
 	int N = vecMat.size();
@@ -834,7 +839,52 @@ void FileCopy(std::string sourePath, std::string destPath)
 	source.close();
 	dest.close();
 }
+//////////////////////////////////////////////////////////////////////////
+// WRITE AS CSV
+void WriteCSV(std::vector<std::vector<std::string>> dataVV, std::string CSV_Path, int fileNum)
+{
+	std::ofstream myfile;
+	//std::string CSV_Path = fileName;
+	myfile.open(CSV_Path.c_str());
+	for (int i = 0; i < dataVV.size(); i++){
+		std::string lineStr = "";
+		for (int ii = 0; ii < fileNum; ii++){
+			lineStr += dataVV[i][ii] + ";";
+		}
+		lineStr += "\n";
+		myfile << lineStr;
+	}
+}
 
+void WriteCSV(std::vector<std::vector<float>> dataVV, char* fileName, int fileNum)
+{
+	std::ofstream myfile;
+	std::string CSV_Path = fileName;
+	myfile.open(CSV_Path.c_str());
+	for (int i = 0; i < dataVV.size(); i++){
+		std::string lineStr = "";
+		for (int ii = 0; ii < fileNum; ii++){
+			lineStr += std::to_string(dataVV[i][ii]) + ";";
+		}
+		lineStr += "\n";
+		myfile << lineStr;
+	}
+}
+
+void WriteCSV(std::vector<std::vector<int>> dataVV, char* fileName, int fileNum)
+{
+	std::ofstream myfile;
+	std::string CSV_Path = fileName;
+	myfile.open(CSV_Path.c_str());
+	for (int i = 0; i < dataVV.size(); i++){
+		std::string lineStr = "";
+		for (int ii = 0; ii < fileNum; ii++){
+			lineStr += std::to_string(dataVV[i][ii]) + ";";
+		}
+		lineStr += "\n";
+		myfile << lineStr;
+	}
+}
 //////////////////////////////////////////////////////////////////////////
 // JSON
 std::size_t callback(

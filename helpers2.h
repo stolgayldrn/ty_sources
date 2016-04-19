@@ -35,12 +35,16 @@ int GET_FolderList(const char* Folder, std::vector<std::string> &fileList);
 // return negative if it cannot read it. 0 on success
 int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDescByte, float** xCoords, float** yCoords, float** orientations, float** scales);
 std::string int2string(int num);
+std::string uint2string(uint num);
 std::string longlongint2string(long long int num);
 std::string float2string(float number);
 cv::Mat makeCanvas(std::vector<cv::Mat>& vecMat, int windowHeight, int nRows);
 int DirExists(const char *path);
 int PathControl(std::string Path);
 void FileCopy(std::string sourePath, std::string destPath);
+void WriteCSV(std::vector<std::vector<std::string>> dataVV, std::string CSV_Path, int fileNum);
+void WriteCSV(std::vector<std::vector<float>> dataVV, char* fileName, int fileNum);
+void WriteCSV(std::vector<std::vector<int>> dataVV, char* fileName, int fileNum);
 std::size_t callback( const char* in, std::size_t size, std::size_t num, std::string* out);
 // json
 //int decode_query_json(const char* Query, char* filePath, char* id, int* NumMatches);

@@ -140,7 +140,7 @@ bool niceHomography(const double* hp)
 double estimate_homography(std::vector<Point2f> &points1, std::vector<Point2f> &points2, std::vector<unsigned int> &Inliers, const double meanThreshold = 10.0)
 {
 	Mat _mask;
-	double ransacReprojThreshold = 3;
+	//double ransacReprojThreshold = 3;
     Mat inliersMat;
 
     Mat H = findHomography(Mat(points1), Mat(points2), 0, 3, _mask);
@@ -259,7 +259,6 @@ int cv_get_descs(const char* FileName, Mat &descriptorMat, std::vector<Point2f> 
 				Orientations.push_back(orientations[i]);
 				Scales.push_back(scales[i]);
 			}
-			status = 1;
 		}
 
 		delete[] xCoords; xCoords=0;
@@ -408,9 +407,9 @@ void cv_FLANN_MatcherRobust( cv::Mat& descriptors_1, cv::Mat& descriptors_2, std
 				{
 					// 3. Remove matches for which NN ratio is > than threshold
 					// clean image 1 -> image 2 matches
-					int removed1 = ratioTest(matches12);
+					//int removed1 = ratioTest(matches12);
 					// clean image 2 -> image 1 matches
-					int removed2 = ratioTest(matches21);
+					//int removed2 = ratioTest(matches21);
 
 					// 4. Remove non-symmetrical matches
 					symmetryTest(matches12, matches21, good_matches);
@@ -478,8 +477,6 @@ int cv_GeoRR_Scoring_Location(std::vector<Point2f> &coords_Q, std::vector<Point2
 						score = (score/sum) * ((double)matches.size() / sqrt((double)coords_Q.size()*(double)coords_S.size()));//max bin size*(match/descriptor)	
 					else if (T_SCORE_FGC_NORM)
 						score = (score/sum) * ((double)matches.size() / (double)coords_Q.size() );
-					else
-						score = 0;
 				}
 			}
 			status=0;
