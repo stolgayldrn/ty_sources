@@ -272,7 +272,7 @@ int cv_get_descs(const char* FileName, Mat &descriptorMat, std::vector<Point2f> 
 	return status;
 }
 
-int cv_FLANN_Matcher(Mat &descriptors_1, Mat &descriptors_2,std::vector< DMatch > &matches,std::vector< DMatch > &good_matches)
+int cv_FLANN_Matcher(Mat &descriptors_1, Mat &descriptors_2, std::vector< DMatch > &matches, std::vector< DMatch > &good_matches)
 {
 	int status = -1;
 	FlannBasedMatcher matcher;	
@@ -287,15 +287,19 @@ int cv_FLANN_Matcher(Mat &descriptors_1, Mat &descriptors_2,std::vector< DMatch 
 			//-- Quick calculation of max and min distances between keypoints
 			double max_dist = 0; double min_dist = matches[0].distance;
 
-			for( int i = 0; i < matches.size(); i++ )
-			{ double dist = matches[i].distance;
-			if( dist < min_dist ) min_dist = dist;
-			if( dist > max_dist ) max_dist = dist;
+			for (int i = 0; i < matches.size(); i++)
+			{
+				double dist = matches[i].distance;
+				if (dist < min_dist) min_dist = dist;
+				if (dist > max_dist) max_dist = dist;
 			}
 
-			for( int i = 0; i < matches.size(); i++ )
-			{ if( matches[i].distance <= max(2*min_dist, 250.0) )
-			{ good_matches.push_back( matches[i]); }
+			for (int i = 0; i < matches.size(); i++)
+			{
+				//if (matches[i].distance <= max(2 * min_dist, 250.0))
+				//if (matches[i].distance <= max(2 * min_dist, max_dist))
+				if (matches[i].distance <= 0)
+					good_matches.push_back(matches[i]);
 			}
 		}
 
