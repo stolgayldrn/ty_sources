@@ -272,7 +272,7 @@ int cv_get_descs(const char* FileName, Mat &descriptorMat, std::vector<Point2f> 
 	return status;
 }
 
-int cv_FLANN_Matcher(Mat &descriptors_1, Mat &descriptors_2, std::vector< DMatch > &matches, std::vector< DMatch > &good_matches)
+int cv_FLANN_Matcher(Mat &descriptors_1, Mat &descriptors_2, std::vector< DMatch > &matches, std::vector< DMatch > &good_matches, float gm_distance)
 {
 	int status = -1;
 	FlannBasedMatcher matcher;	
@@ -296,9 +296,7 @@ int cv_FLANN_Matcher(Mat &descriptors_1, Mat &descriptors_2, std::vector< DMatch
 
 			for (int i = 0; i < matches.size(); i++)
 			{
-				//if (matches[i].distance <= max(2 * min_dist, 250.0))
-				//if (matches[i].distance <= max(2 * min_dist, max_dist))
-				if (matches[i].distance <= 0)
+				if (matches[i].distance <= max(2 * min_dist, gm_distance))
 					good_matches.push_back(matches[i]);
 			}
 		}
