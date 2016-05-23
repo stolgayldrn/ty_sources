@@ -13,7 +13,6 @@
 #include <omp.h>
 #include <ctime>
 
-
 #ifndef __IPL_H__
    typedef unsigned char uchar;
    typedef unsigned short ushort;
@@ -25,10 +24,6 @@ enum VLFeat_Init_Mode { Small_Tree=1, Middle_Tree, Large_Tree, TEST_Tree};
 
 int read_DSC_from_flicker1M(std::string readFolderPath, std::string dsc_type, unsigned char* descs, 
 	vl_size &numTotalDesc, vl_size maxTotalDesc, unsigned int dimOfDesc, FeatureType ft, unsigned int sizeOfDescType);
-int readImagesOnYearFolderDecider(std::vector<std::string>yearsList, std::string readFolderPath, unsigned char* descs,
-	vl_size &numTotalDesc, vl_size maxTotalDesc, unsigned int dimOfDesc, FeatureType ft, unsigned int sizeOfDescType);
-int readImagesOnYearFolder(std::string readFolderPath, unsigned char* descs, vl_size &numTotalDesc, vl_size maxTotalDesc,
-	unsigned int dimOfDesc, FeatureType ft, unsigned int sizeOfDescType);
 
 // sen o inheritance'larla ugrasma. cok fazla sey var. ben yapiyorum.
 // o zman bunu eski haliyle çalıştırıp hataya bakalım
