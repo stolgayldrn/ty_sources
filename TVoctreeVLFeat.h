@@ -2,7 +2,7 @@
 #define VLFEAT_VOCTREE
 
 #include "helpers2.h"
-#include "descriptors.h"
+#include "uchar_descriptors.h"
 #include <stdio.h>
 #include "vl/generic.h"
 #include "vl/hikmeans.h"
