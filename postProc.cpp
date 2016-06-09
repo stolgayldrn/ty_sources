@@ -1,9 +1,22 @@
+/*
+Copyright (C) 2015-2020 S.Tolga Yildiran.
+All rights reserved.
+
+This file is part of Tolga Yildiran Video Search library and is made available under
+the terms of the BSD license (see the COPYING file).
+*/
+/************************************************************************/
+/* Tolga Yildiran														*/
+/* 24/05/2016 															*/
+/* stolgayldrn@gmail.com												*/
+/************************************************************************/
+
 #include "postProc.h"
 
 void computeReprojError( const std::vector<Point2f> m1, const std::vector<Point2f> m2, Mat model, std::vector<double> &repjErr, double &meanErr, double &var )
 {
     int i, count = m1.size();
-    const double* H = (double*)model.data;
+    const double* H = reinterpret_cast<double*>(model.data);
 	meanErr = 0;
 
 	repjErr.resize(count);
@@ -17,7 +30,7 @@ void computeReprojError( const std::vector<Point2f> m1, const std::vector<Point2
         repjErr[i] = (dx*dx + dy*dy);
 		meanErr += repjErr[i];
     }
-	meanErr /= (double)count; 
+	meanErr /= static_cast<double>(count); 
 
 	var = 0;
 	// also compute the variance
@@ -395,7 +408,7 @@ void cv_FLANN_MatcherRobust( cv::Mat& descriptors_1, cv::Mat& descriptors_2, std
 	if (descriptors_1.rows>4 && descriptors_2.rows>4)
 	{
 
-		// 2. Match the two image descriptors
+		// 2. Match the two image Descriptors
 
 		// 2a. From image 1 to image 2
 		matcher.knnMatch(descriptors_1, descriptors_2, matches12, 2); // return 2 nearest neighbours

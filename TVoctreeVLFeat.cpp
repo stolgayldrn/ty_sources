@@ -10,7 +10,7 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 	vl_size &numTotalDesc, vl_size maxTotalDesc, unsigned int dimOfDesc, FeatureType ft, unsigned int sizeOfDescType)
 {
 	vector<string> folderList;
-	GET_FolderList(readFolderPath.c_str(),folderList);
+	getFolderList(readFolderPath.c_str(),folderList);
 	//int numOfParallel = 32;
 	int nthr = omp_get_max_threads();
 	omp_set_dynamic(0);     // Explicitly disable dynamic teams
@@ -20,7 +20,7 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 	{
 		string subFolderPath = readFolderPath + "/" + folderList[k] + "/" + dsc_type;
 		vector<string> subFolderList;
-		GET_FolderList(subFolderPath.c_str(), subFolderList);
+		getFolderList(subFolderPath.c_str(), subFolderList);
 		clock_t start = clock();
 		double duration;
 		
@@ -28,17 +28,17 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 		{
 			string subsubFolderPath = subFolderPath + "/" + subFolderList[l];
 			vector<string> dscList;
-			GET_DirectoryDSCs(subsubFolderPath.c_str(), dscList);
+			getDirectoryDSCs(subsubFolderPath.c_str(), dscList);
 			#pragma omp parallel for
 			for (int m = 0; m < dscList.size(); m++)
 			{
 
 				string dscPath = subsubFolderPath + "/" + dscList[ m];
-				uchar_descriptors dscFile(dscPath.c_str(), ft);
-				dscFile.ReadDSC();
-				//dscFile.ReadDSC__ver1();
-				unsigned int numDesc = dscFile.GetNumOfDescriptors();
-				memcpy(descs + (numTotalDesc * dimOfDesc), dscFile.GetUCHAR_descriptors(), (numDesc)*dimOfDesc*sizeOfDescType);
+				UcharDescriptors dscFile(dscPath.c_str(), ft);
+				dscFile.readDSC();
+				//dscFile.readDSC__v1();
+				unsigned int numDesc = dscFile.getNumOfDescriptors();
+				memcpy(descs + (numTotalDesc * dimOfDesc), dscFile.getUcharDescriptors(), (numDesc)*dimOfDesc*sizeOfDescType);
 				numTotalDesc += numDesc;
 				if(	m % 1000 == 0 ) printf("\rProcess Rate in Folder: %.2f%%, Total Rate: %2f",100.0*m/10000,( m*1.00 + (10000*l + (100000*k)))/10000);	
 			}
@@ -48,11 +48,8 @@ int read_DSC_from_flicker1M(string readFolderPath, string dsc_type, unsigned cha
 		duration = ( std::clock() - start ) / double(CLOCKS_PER_SEC);
 		printf("\nDuration: %f\n\n", duration);
 	}
-
 	return 1;
-
 }
-
 
 TVoctreeVLFeat::TVoctreeVLFeat(void){
 	m_init = 0;

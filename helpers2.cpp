@@ -1,36 +1,15 @@
-//#include <zmq.h>
-//#include "cmp.h"
 #include "helpers2.h"
 
-
-//typedef enum TImageOpMode {T_MODE_SEARCH = 0, T_MODE_INSERT = 1, T_MODE_REMOVE = 2};
-
-//char* read_file_to_string(const char* input_file_name)
-//{
-//	char *file_contents;
-//	long input_file_size;
-//	FILE *input_file = fopen(input_file_name, "rb");
-//	fseek(input_file, 0, SEEK_END);
-//	input_file_size = ftell(input_file);
-//	rewind(input_file);
-//	file_contents = (char*)calloc(input_file_size+4, sizeof(char));
-//	fread(file_contents, sizeof(char), input_file_size, input_file);
-//	file_contents[input_file_size] = '\0';
-//	fclose(input_file);
-//	return file_contents;
-//}
-//
-//
-const char *GET_FileNameExt(const char *filename) 
+const char *getFileNameExt(const char *filename) 
 {
     const char *dot = strrchr(filename, '.');
     if(!dot || dot == filename) return "";
     return dot + 1;
 }
 //
-int IS_SigFile(const char *filename)
+int isSigFile(const char *filename)
 {
-	const char* ext = GET_FileNameExt(filename);
+	const char* ext = getFileNameExt(filename);
 	size_t lenExt = strlen(ext);
 
 	if (lenExt==3)
@@ -44,9 +23,9 @@ int IS_SigFile(const char *filename)
 	return 0;
 }
 
-int IS_DscFile(const char *filename)
+int isDscFile(const char *filename)
 {
-	const char* ext = GET_FileNameExt(filename);
+	const char* ext = getFileNameExt(filename);
 	size_t lenExt = strlen(ext);
 
 	if (lenExt==3)
@@ -60,9 +39,9 @@ int IS_DscFile(const char *filename)
 	return 0;
 }
 
-int IS_ImageFile(const char *filename)
+int isImageFile(const char *filename)
 {
-	const char* ext = GET_FileNameExt(filename);
+	const char* ext = getFileNameExt(filename);
 	int lenExt = strlen(ext);
 
 	if (lenExt==3)
@@ -89,336 +68,11 @@ int IS_ImageFile(const char *filename)
 	return 0;
 }
 
-int FileExist (const char *filename)
+int fileExist (const char *filename)
 {
   struct stat   buffer;   
   return (stat (filename, &buffer) == 0);
 }
-
-
-//static bool file_reader(cmp_ctx_t *ctx, void *data, size_t limit){
-//memcpy(data, limit, (FILE *)ctx->buf);
-//}
-
-//static size_t file_writer(cmp_ctx_t *ctx, const void *data, size_t count) 
-//{
-//return fwrite(data, sizeof(uint8_t), count, (FILE *)ctx->buf);
-//}
-
-
-//
-//int decode_query_json(const char* query, trunoptions* runoptions)
-//{
-//    json_error_t error;
-//    json_t* json = json_loadb(query, strlen(query), 0, &error);
-//	int numpropertyset = 0;
-//
-//	runoptions->flags.all = 0;
-//
-//	// set the unset values to defaults to prevent unexpected behavior
-//	runoptions->command = t_mode_unassigned;
-//	runoptions->numfeatures = 5000;
-//	runoptions->id = "";
-//	runoptions->foldername = "";
-//	runoptions->filename = "";
-//	runoptions->nummatches = 16;
-//	runoptions->matchlist.clear();
-//
-//	/*// decode cmp
-//	cmp_init(&cmp, fh, file_reader, file_writer);
-//
-//	if (!cmp_read_str_size(&cmp, &str_size))
-//        error_and_exit(cmp_strerror(&cmp));
-//
-//    if (str_size > (sizeof(hello) - 1))
-//        error_and_exit("packed 'hello' length too long\n");
-//
-//    if (!read_bytes(hello, str_size, fh))
-//        error_and_exit(cmp_strerror(&cmp));*/
-//
-//	const char *key;
-//	json_t *value;
-//	void *iter = json_object_iter(json);
-//	while(iter)
-//	{
-//		key = json_object_iter_key(iter);
-//		value = json_object_iter_value(iter);
-//
-//		if (strcmp(key, "filename")==0)
-//		{
-//			runoptions->filename = json_string_value(value);
-//			runoptions->flags.single.filename = 1;		
-//		}
-//		else if (strcmp(key, "foldername")==0)
-//		{
-//			runoptions->foldername = json_string_value(value);
-//			runoptions->flags.single.foldername = 1;		
-//		}
-//		else if (strcmp(key, "filelist")==0)
-//		{
-//			// todo : to be filled
-//			runoptions->foldername = json_string_value(value);
-//			runoptions->flags.single.foldername = 1;		
-//		}
-//		else if (strcmp(key, "id")==0)
-//		{
-//			runoptions->id = json_string_value(value);
-//			runoptions->flags.single.id = 1;
-//		}
-//		else if (strcmp(key, "nummatches")==0)
-//		{
-//			runoptions->nummatches = (int)json_integer_value(value);
-//			runoptions->flags.single.nummatches = 1;
-//		}
-//		else if (strcmp(key, "imageopmode")==0)
-//		{
-//			runoptions->command = (timageopmode)json_integer_value(value);
-//			runoptions->flags.single.command = 1;
-//		}
-//		else
-//		{
-//			printf("unknown option: %s\n",  json_string_value(value));
-//			numpropertyset--;
-//		}
-//
-//		//json_decref(value);
-//		iter = json_object_iter_next(json, iter);
-//		numpropertyset++;
-//	}
-//
-//	json_decref(json);
-//	return numpropertyset;
-//}
-//
-
-//int decode_result_query_json(const char* Query, TRunOptions* runOptions)
-//{
-//    json_error_t error;
-//    json_t* json = json_loads(Query, 0, &error);
-//	int numPropertySet = 0;
-//
-//	runOptions->flags.all = 0;
-//
-//	// set the unset values to defaults to prevent unexpected behavior
-//	runOptions->command = T_MODE_UNASSIGNED;
-//	runOptions->numFeatures = 5000;
-//	runOptions->id = "";
-//	runOptions->folderName = "";
-//	runOptions->fileName = "";
-//	runOptions->numMatches = 16;
-//	runOptions->matchList.clear();
-//
-//
-//	const char *key;
-//	json_t *value;
-//	void *iter = json_object_iter(json);
-//	while(iter)
-//	{
-//		key = json_object_iter_key(iter);
-//		value = json_object_iter_value(iter);
-//
-//		if (strcmp(key, "FileName")==0)
-//		{
-//			runOptions->fileName = json_string_value(value);
-//			runOptions->flags.single.fileName = 1;		
-//		}
-//		else if (strcmp(key, "FolderName")==0)
-//		{
-//			runOptions->folderName = json_string_value(value);
-//			runOptions->flags.single.folderName = 1;		
-//		}
-//		else if (strcmp(key, "Status")==0)
-//		{
-//			int status = (int)json_integer_value(value);
-//			if (status)
-//			{
-//				printf("Match finding was unsucessfull in previous step\n");
-//				return 0;
-//			}
-//			//runOptions->folderName = json_integer_value(value);
-//			//runOptions->flags.single.folderName = 1;		
-//		}
-//		else if (strcmp(key, "Id")==0)
-//		{
-//			runOptions->id = json_string_value(value);
-//			runOptions->flags.single.id = 1;
-//		}
-//		else if (strcmp(key, "Matches")==0)
-//		{
-//			json_t *matches = json_object_get(json, "Matches");
-//			if(!json_is_array(matches))
-//			{
-//				fprintf(stderr, "error: commits is not an array\n");
-//				return 1;
-//			}
-//
-//			int numMatches = json_array_size(matches);
-//			runOptions->numMatches = numMatches;
-//
-//			for(int j = 0; j< numMatches; j++)
-//			{
-//				json_t *match = json_array_get(matches, j);
-//				if(!json_is_object(match))
-//				{
-//					fprintf(stderr, "error: commit %d is not an object\n", j + 1);
-//					return 1;
-//				}
-//
-//				json_t* jsLabel = json_object_get(match, "Label");
-//				json_t* jsScore = json_object_get(match, "Score");
-//				json_t* jsMatch = json_object_get(match, "Match");
-//
-//				int label = (int)json_integer_value(jsLabel);
-//				float score = (float)json_real_value(jsScore);
-//				std::string matchStr = json_string_value(jsMatch);
-//
-//				TMatch newMatch ;
-//				newMatch.fileName = matchStr;
-//				newMatch.label = label;
-//				newMatch.score = score;
-//
-//				runOptions->matchList.push_back(newMatch);
-//			}
-//		}
-//		else if (strcmp(key, "ImageOpMode")==0)
-//		{
-//			runOptions->command = (TImageOpMode)json_integer_value(value);
-//			runOptions->flags.single.command = 1;
-//		}
-//		else
-//		{
-//			printf("Unknown option: %s\n",  json_string_value(value));
-//			numPropertySet--;
-//		}
-//
-//		//json_decref(value);
-//		iter = json_object_iter_next(json, iter);
-//		numPropertySet++;
-//	}
-//
-//	json_decref(json);
-//	return numPropertySet;
-//}
-
-//char* get_json_empty(const char* id, const char* name)
-//{
-//	json_t *jobj = json_object();
-//	json_object_set_new(jobj, "Id", json_string(id));
-//	char err[4096];
-//	sprintf(err, "Cannot read file: %s", name);
-//	json_object_set_new(jobj, "Status", json_integer(-1));
-//	json_object_set_new(jobj, "Message", json_string(err));
-//	char* result = json_dumps(jobj, 0);
-//	printf("%s\r\n", result);
-//	json_decref(jobj);
-//	return result;
-//}
-
-//char* get_result_json(const int numMaxMatches, const char* id, const char* name, int* labels, float* scores, vector<string> frameMap)
-//{
-//	json_t *jobj = json_object(), *jmatches = json_array();
-//	//json_t *jscores = json_array(), *jlabels = json_array();
-//	json_object_set_new(jobj, "Status", json_integer(0));
-//	json_object_set_new(jobj, "Id", json_string(id));
-//	json_object_set_new(jobj, "FileName", json_string(name));
-//
-//	for (int k=0;k<numMaxMatches; k++)
-//	{
-//		if (labels[k]>=0)
-//		{
-//			json_t *jmatch = json_object();
-//
-//			json_object_set_new(jmatch, "Label", json_integer(labels[k]));
-//			json_object_set_new(jmatch, "Score", json_real(scores[k]));
-//			json_object_set_new(jmatch, "Match", json_string(frameMap[labels[k]].c_str()));
-//
-//			json_array_append_new(jmatches, jmatch);
-//		}
-//	}
-//
-//	json_object_set_new(jobj, "Matches", jmatches);
-//
-//	char* result = json_dumps(jobj, JSON_PRESERVE_ORDER);
-////	printf("%s\r\n", result);
-//
-//	json_decref(jobj);
-//
-//	return result;
-//}
-
-//char* get_run_result_json(TRunOptions& runResult)
-//{
-//	json_t *jobj = json_object(), *jmatches = json_array();
-//	//json_t *jscores = json_array(), *jlabels = json_array();
-//	json_object_set_new(jobj, "Status", json_integer(0));
-//	json_object_set_new(jobj, "Id", json_string(runResult.id.c_str()));
-//	json_object_set_new(jobj, "FileName", json_string(runResult.fileName.c_str()));
-//	
-//	int numMaxMatches = runResult.matchList.size();
-//
-//	for (int k=0;k<numMaxMatches; k++)
-//	{
-//		TMatch tMatch = runResult.matchList[k];
-//		if (tMatch.label>=0)
-//		{
-//			json_t *jmatch = json_object();
-//
-//			json_object_set_new(jmatch, "Label", json_integer(tMatch.label));
-//			json_object_set_new(jmatch, "Score", json_real(tMatch.score));
-//			json_object_set_new(jmatch, "Match", json_string(tMatch.fileName.c_str()));
-//
-//			json_array_append_new(jmatches, jmatch);
-//		}
-//	}
-//
-//	json_object_set_new(jobj, "Matches", jmatches);
-//
-//	char* result = json_dumps(jobj, JSON_PRESERVE_ORDER);
-////	printf("%s\r\n", result);
-//
-//	json_decref(jobj);
-//
-//	return result;
-//}
-
-
-//char* get_sorted_result_json(const int numMaxMatches, const char* id, const char* name, int* labels, float* scores)
-//{
-//	json_t *jobj = json_object(), *jmatches = json_array();
-//	//json_t *jscores = json_array(), *jlabels = json_array();
-//	json_object_set_new(jobj, "Status", json_integer(0));
-//	json_object_set_new(jobj, "Id", json_string(id));
-//	json_object_set_new(jobj, "FileName", json_string(name));
-//
-//	for (int k=0;k<numMaxMatches; k++)
-//	{
-//		if (labels[k]>=0)
-//		{
-//			json_t *jmatch = json_object();
-//
-//			json_object_set_new(jmatch, "Label", json_integer(labels[k]));
-//			json_object_set_new(jmatch, "Score", json_real(scores[k]));
-//			//json_object_set_new(jmatch, "Match", json_string(frameMap[labels[k]].c_str()));
-//
-//			json_array_append_new(jmatches, jmatch);
-//		}
-//	}
-//
-//	json_object_set_new(jobj, "Matches", jmatches);
-//
-//	char* result = json_dumps(jobj, JSON_PRESERVE_ORDER);
-////	printf("%s\r\n", result);
-//
-//	json_decref(jobj);
-//
-//	return result;
-//}
-
-//
-//char* get_result_json_list(const int numMaxMatches, const char* id, const char* name, int* labels, float* scores, vector<string> frameMap)
-//{
-//
-//}
 
 //// "tcp://192.168.1.2:5555"
 //void connect_socket(const char* ip, void** context, void** requester)
@@ -450,7 +104,7 @@ int FileExist (const char *filename)
 //
 //	return len;
 //}
-//
+
 //void send_socket(void* requester, const char* text)
 //{
 //	zmq_msg_t request;
@@ -460,7 +114,7 @@ int FileExist (const char *filename)
 //	zmq_msg_send (&request, requester, 0);
 //	zmq_msg_close (&request);
 //}
-//
+
 //void close_socket(void** requester, void** context)
 //{
 //	zmq_close (*requester);
@@ -471,9 +125,7 @@ int FileExist (const char *filename)
 //}
 
 /////////////////////////////////////// NEW FUNCTIONS GO BEYOND THIS POINT //////////////////////////////
-
-
-int GET_DirectorySignatures(const char* Folder, std::vector<std::string> &fileList)
+int getDirectorySignatures(const char* Folder, std::vector<std::string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -488,8 +140,6 @@ int GET_DirectorySignatures(const char* Folder, std::vector<std::string> &fileLi
 		while ((ent = readdir (dir))) 
 		{
 			struct dirent *temp=(struct dirent*)malloc(sizeof(struct dirent));
-
-			//memcpy(temp->d_name,ent->d_name,sizeof(TChar)*ent->d_namlen);
 			strcpy_s(temp->d_name,ent->d_name);
 			temp->d_namlen=ent->d_namlen;
 			temp->d_type=ent->d_type;
@@ -497,10 +147,9 @@ int GET_DirectorySignatures(const char* Folder, std::vector<std::string> &fileLi
 			switch (ent->d_type) 
 			{
 			case DT_REG:
-				if (IS_SigFile(temp->d_name))
+				if (isSigFile(temp->d_name))
 				{
 					fileList.push_back(std::string( temp->d_name ));
-					//t_list_push_list(&fileList,temp);
 					numFiles++;
 					break;
 				}
@@ -519,7 +168,7 @@ int GET_DirectorySignatures(const char* Folder, std::vector<std::string> &fileLi
 	return i;
 }
 
-int GET_DirectoryDSCs(const char* Folder, std::vector<std::string> &fileList)
+int getDirectoryDSCs(const char* Folder, std::vector<std::string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -534,8 +183,6 @@ int GET_DirectoryDSCs(const char* Folder, std::vector<std::string> &fileList)
 		while ((ent = readdir (dir))) 
 		{
 			struct dirent *temp=(struct dirent*)malloc(sizeof(struct dirent));
-
-			//memcpy(temp->d_name,ent->d_name,sizeof(TChar)*ent->d_namlen);
 			strcpy_s(temp->d_name,ent->d_name);
 			temp->d_namlen=ent->d_namlen;
 			temp->d_type=ent->d_type;
@@ -543,10 +190,9 @@ int GET_DirectoryDSCs(const char* Folder, std::vector<std::string> &fileList)
 			switch (ent->d_type) 
 			{
 			case DT_REG:
-				if (IS_DscFile(temp->d_name))
+				if (isDscFile(temp->d_name))
 				{
 					fileList.push_back(std::string( temp->d_name ));
-					//t_list_push_list(&fileList,temp);
 					numFiles++;
 					break;
 				}
@@ -564,7 +210,7 @@ int GET_DirectoryDSCs(const char* Folder, std::vector<std::string> &fileList)
 	return i;
 }
 
-int GET_DirectoryImages(const char* Folder, std::vector<std::string> &fileList)
+int getDirectoryImages(const char* Folder, std::vector<std::string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -579,8 +225,6 @@ int GET_DirectoryImages(const char* Folder, std::vector<std::string> &fileList)
 		while ((ent = readdir (dir))) 
 		{
 			struct dirent *temp=(struct dirent*)malloc(sizeof(struct dirent));
-
-			//memcpy(temp->d_name,ent->d_name,sizeof(TChar)*ent->d_namlen);
 			strcpy_s(temp->d_name,ent->d_name);
 			temp->d_namlen=ent->d_namlen;
 			temp->d_type=ent->d_type;
@@ -588,10 +232,9 @@ int GET_DirectoryImages(const char* Folder, std::vector<std::string> &fileList)
 			switch (ent->d_type) 
 			{
 			case DT_REG:
-				if (IS_ImageFile(temp->d_name))
+				if (isImageFile(temp->d_name))
 				{
 					fileList.push_back(std::string( temp->d_name ));
-					//t_list_push_list(&fileList,temp);
 					numFiles++;
 					break;
 				}
@@ -613,7 +256,7 @@ int GET_DirectoryImages(const char* Folder, std::vector<std::string> &fileList)
 	return i;
 }
 
-int GET_FolderList(const char* Folder, std::vector<std::string> &fileList)
+int getFolderList(const char* Folder, std::vector<std::string> &fileList)
 {
 	int i=0;
 	DIR* dir;	
@@ -633,8 +276,6 @@ int GET_FolderList(const char* Folder, std::vector<std::string> &fileList)
 			strcpy_s(temp->d_name,ent->d_name);
 			temp->d_namlen=ent->d_namlen;
 			temp->d_type=ent->d_type;
-			
-
 			switch (ent->d_type) 
 			{
 			case DT_DIR:
@@ -661,8 +302,6 @@ int GET_FolderList(const char* Folder, std::vector<std::string> &fileList)
 
 	return i;
 }
-
-///////////////////////////////////
 
 int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDescByte, float** xCoords, float** yCoords, float** orientations, float** scales)
 {
@@ -791,7 +430,7 @@ cv::Mat makeCanvas(std::vector<cv::Mat>& vecMat, int windowHeight, int nRows) {
 	return canvasImage;
 }
 
-int DirExists(const char *path)
+int dirExists(const char *path)
 {
 	if( _access( path, 0 ) == 0 ){
 
@@ -802,12 +441,12 @@ int DirExists(const char *path)
 	}
 	return false;
 }
-int PathControl(std::string Path)
+int pathControl(std::string Path)
 {
-	if(!DirExists(Path.c_str()))
+	if(!dirExists(Path.c_str()))
 	{
 		std::string parentFold = Path.substr(0, Path.rfind("\\"));
-		PathControl(parentFold);
+		pathControl(parentFold);
 		std::wstring stemp = std::wstring(Path.begin(), Path.end());
 		LPCWSTR szDirPath = stemp.c_str();
 		// Create a new directory.
@@ -826,7 +465,7 @@ int PathControl(std::string Path)
 		return 1;
 }
 
-void FileCopy(std::string sourePath, std::string destPath)
+void fileCopy(std::string sourePath, std::string destPath)
 {
 	std::ifstream source(sourePath, std::ios::binary);
 	std::ofstream dest(destPath, std::ios::binary);
@@ -841,7 +480,7 @@ void FileCopy(std::string sourePath, std::string destPath)
 }
 //////////////////////////////////////////////////////////////////////////
 // WRITE AS CSV
-void WriteCSV(std::vector<std::vector<std::string>> dataVV, std::string CSV_Path, int fileNum)
+void writeToCSV(std::vector<std::vector<std::string>> dataVV, std::string CSV_Path, int fileNum)
 {
 	std::ofstream myfile;
 	//std::string CSV_Path = fileName;
@@ -856,7 +495,7 @@ void WriteCSV(std::vector<std::vector<std::string>> dataVV, std::string CSV_Path
 	}
 }
 
-void WriteCSV(std::vector<std::vector<float>> dataVV, char* fileName, int fileNum)
+void writeToCSV(std::vector<std::vector<float>> dataVV, char* fileName, int fileNum)
 {
 	std::ofstream myfile;
 	std::string CSV_Path = fileName;
@@ -871,7 +510,7 @@ void WriteCSV(std::vector<std::vector<float>> dataVV, char* fileName, int fileNu
 	}
 }
 
-void WriteCSV(std::vector<std::vector<int>> dataVV, char* fileName, int fileNum)
+void writeToCSV(std::vector<std::vector<int>> dataVV, char* fileName, int fileNum)
 {
 	std::ofstream myfile;
 	std::string CSV_Path = fileName;
@@ -897,57 +536,3 @@ std::size_t callback(
 	out->append(in, totalBytes);
 	return totalBytes;
 }
-//////////////////////////////////////////////////////////////////////////
-//int cv_get_descs(const char* FileName, cv::Mat &descriptorMat, std::vector<cv::Point2f> &Coords, std::vector<float> &Orientations, std::vector<float> &Scales)
-//{
-//	int status = -1;
-//	unsigned int numdesc = 0;
-//	unsigned char* siftDescByte = 0;
-//	float* xCoords = 0;
-//	float* yCoords = 0;
-//	float* orientations = 0;
-//	float* scales = 0;
-//	
-//	if ( read_sig(FileName, &numdesc, &siftDescByte, &xCoords, &yCoords, &orientations, &scales) >=0 )
-//	{
-//		descriptorMat = cv::Mat(numdesc, 128, CV_32F);
-//		for (unsigned int i=0; i<numdesc; i++)
-//		{
-//			const unsigned char* srcRow = &siftDescByte[i*128];
-//			float* descRowCV = (float*)(&descriptorMat.data[descriptorMat.step*i]);
-//			for (int j=0; j<128; j++)
-//			{
-//				descRowCV[j] = (float)srcRow[j];
-//			}
-//		}
-//
-//		delete[] siftDescByte;
-//		siftDescByte=0;
-//
-//		if (xCoords)
-//		{
-//			Coords.reserve(numdesc);
-//			Orientations.reserve(numdesc);
-//			Scales.reserve(numdesc);
-//
-//			for (unsigned int i=0; i<numdesc; i++)
-//			{
-//				Coords.push_back(cv::Point2f(xCoords[i], yCoords[i]));
-//				Orientations.push_back(orientations[i]);
-//				Scales.push_back(scales[i]);
-//			}
-//			status = 1;
-//		}
-//
-//		delete[] xCoords; xCoords=0;
-//		delete[] yCoords; yCoords=0;
-//		delete[] orientations; orientations=0;
-//		delete[] scales; scales=0;
-//
-//		status = 0;
-//	}
-//
-//	return status;
-//}
-
-

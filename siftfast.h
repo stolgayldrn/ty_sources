@@ -33,7 +33,7 @@ typedef struct KeypointSt {
 extern "C" {
 #endif
 
-//Keypoint GetOpencvKeypoints(Image porgimage);
+//Keypoint getOpencvKeypoints(Image porgimage);
 Keypoint GetKeypoints(Image porgimage, int Scales, float InitSigma);
 Image CreateImage(int rows, int cols);
 Image CreateImageFromMatlabData(double* pdata, int rows, int cols);

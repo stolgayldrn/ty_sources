@@ -1,3 +1,15 @@
+/*
+Copyright (C) 2015-2020 S.Tolga Yildiran.
+All rights reserved.
+
+This file is part of Tolga Yildiran Video Search library and is made available under
+the terms of the BSD license (see the COPYING file).
+*/
+/************************************************************************/
+/* Tolga Yildiran														*/
+/* 24/05/2016 															*/
+/* stolgayldrn@gmail.com												*/
+/************************************************************************/
 #ifndef HELPERS2_H
 #define HELPERS2_H
 
@@ -16,44 +28,30 @@
 #include <sys/types.h>			// For stat().
 #include <sys/stat.h>			// For stat().
 #include "dirent.h"
-//#include <opencv2\core.hpp>
-//#include "t_common_defs.h"
-//
 
 // directory
-//char* read_file_to_string(const char* input_file_name);
-const char *GET_FileNameExt(const char *filename) ;
-int IS_SigFile(const char *filename);
-int IS_DscFile(const char *filename);
-int IS_ImageFile(const char *filename);
-int FileExist ( const char *filename);
-//int GET_DirectorySignatures(const char* Folder, string** FileList);
-int GET_DirectorySignatures(const char* Folder, std::vector<std::string> &fileList);
-int GET_DirectoryDSCs(const char* Folder, std::vector<std::string> &fileList);
-int GET_DirectoryImages(const char* Folder, std::vector<std::string> &fileList);
-int GET_FolderList(const char* Folder, std::vector<std::string> &fileList);
-// return negative if it cannot read it. 0 on success
+const char *getFileNameExt(const char *filename) ;
+int isSigFile(const char *filename);
+int isDscFile(const char *filename);
+int isImageFile(const char *filename);
+int fileExist ( const char *filename);
+int getDirectorySignatures(const char* Folder, std::vector<std::string> &fileList);
+int getDirectoryDSCs(const char* Folder, std::vector<std::string> &fileList);
+int getDirectoryImages(const char* Folder, std::vector<std::string> &fileList);
+int getFolderList(const char* Folder, std::vector<std::string> &fileList);
 int read_sig(const char* FileName, unsigned int *numdesc, unsigned char** siftDescByte, float** xCoords, float** yCoords, float** orientations, float** scales);
 std::string int2string(int num);
 std::string uint2string(uint num);
 std::string longlongint2string(long long int num);
 std::string float2string(float number);
 cv::Mat makeCanvas(std::vector<cv::Mat>& vecMat, int windowHeight, int nRows);
-int DirExists(const char *path);
-int PathControl(std::string Path);
-void FileCopy(std::string sourePath, std::string destPath);
-void WriteCSV(std::vector<std::vector<std::string>> dataVV, std::string CSV_Path, int fileNum);
-void WriteCSV(std::vector<std::vector<float>> dataVV, char* fileName, int fileNum);
-void WriteCSV(std::vector<std::vector<int>> dataVV, char* fileName, int fileNum);
+int dirExists(const char *path);
+int pathControl(std::string Path);
+void fileCopy(std::string sourePath, std::string destPath);
+void writeToCSV(std::vector<std::vector<std::string>> dataVV, std::string CSV_Path, int fileNum);
+void writeToCSV(std::vector<std::vector<float>> dataVV, char* fileName, int fileNum);
+void writeToCSV(std::vector<std::vector<int>> dataVV, char* fileName, int fileNum);
 std::size_t callback( const char* in, std::size_t size, std::size_t num, std::string* out);
-// json
-//int decode_query_json(const char* Query, char* filePath, char* id, int* NumMatches);
-//int decode_query_json(const char* Query, TRunOptions* runOptions);
-//int decode_result_query_json(const char* Query, TRunOptions* runOptions);
-//char* get_result_json(const int numMaxMatches, const char* id, const char* name, int* labels, float* scores, vector<string> frameMap);
-//char* get_json_empty(const char* id, const char* name);
-//char* get_sorted_result_json(const int numMaxMatches, const char* id, const char* name, int* labels, float* scores);
-//char* get_run_result_json(TRunOptions &runResult);
 
 //// socket
 //void connect_socket(const char* ip, void** context, void** requester);
@@ -61,7 +59,7 @@ std::size_t callback( const char* in, std::size_t size, std::size_t num, std::st
 //int recv_socket(void* requester, char** text);
 //void close_socket(void** requester, void** context);
 //
-//
+
 //// Act like matlab's [Y,I] = SORT(X)
 //// Input:
 ////   unsorted  unsorted vector

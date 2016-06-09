@@ -1917,7 +1917,7 @@ int match_keypoints(list<SiftKeypoint> & kpt_list1,
 //		{
 //			for (int i = 0; i < 128; i ++)
 //			{
-//				fprintf(fp, "%d\t", (int)(it->descriptors[i]));
+//				fprintf(fp, "%d\t", (int)(it->Descriptors[i]));
 //			}
 //		}
 //		fprintf(fp, "\n");
